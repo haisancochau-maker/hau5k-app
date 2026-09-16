@@ -1,0 +1,1834 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Hàu 5K V14.1A - Android ổn định</title>
+<style>
+:root{
+  --bg:#f5f8fc;--card:#fff;--text:#182230;--muted:#667085;--line:#dfe6ef;
+  --blue:#1268d6;--blueSoft:#edf5ff;--green:#22a857;--red:#d92d20;
+  --redSoft:#fff1f0;--orange:#f59e0b;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+.app{max-width:760px;margin:auto;padding:0 14px 96px}
+.topbar{margin:0 -14px 14px;padding:18px;background:linear-gradient(135deg,#0f5bb7,#0a4c9e);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.topbar h1{font-size:22px;margin:0}.topbar .small{font-size:12px;opacity:.9}
+.badge{background:#22b85f;color:#fff;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:800}
+.card{background:var(--card);border:1px solid #edf1f5;border-radius:18px;padding:14px;margin-bottom:12px}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.section-title h2{margin:0;font-size:19px}
+.tables{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:560px){.tables{grid-template-columns:repeat(3,1fr)}}
+.table-btn{min-height:96px;border:1px solid var(--line);border-radius:16px;background:#fff;padding:12px;text-align:left;position:relative}
+.table-btn strong{display:block;font-size:18px}.table-btn .sum{margin-top:8px;color:var(--blue);font-weight:900}
+.table-btn.busy{border:2px solid var(--orange);background:#fffaf0}
+.status{position:absolute;top:10px;right:10px;padding:4px 7px;border-radius:999px;background:#f2f4f7;color:var(--muted);font-size:11px;font-weight:700}
+.busy .status{background:#fff0cc;color:#9c5e00}
+.back{border:0;background:rgba(255,255,255,.15);color:#fff;width:42px;height:42px;border-radius:12px;font-size:24px}
+.order-head{display:flex;align-items:center;gap:10px;min-width:0}.order-title-wrap{min-width:0}
+.order-title{font-size:24px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.order-sub{font-size:12px;opacity:.9}
+.categories{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px}
+.cat{flex:0 0 auto;border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 14px;font-weight:750;color:#344054}
+.cat.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.menu{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:600px){.menu{grid-template-columns:repeat(3,1fr)}}
+.food{min-height:96px;border:1px solid var(--line);border-radius:16px;background:#fff;padding:12px;text-align:left;position:relative;cursor:pointer;transition:.15s}
+.food.selected{border:2px solid var(--blue);background:#fbfdff;padding:11px}
+.food b{display:block;font-size:16px;line-height:1.25;margin-bottom:6px;padding-right:28px}.food .food-price{color:var(--blue);font-size:17px;font-weight:900}
+.food-badge{position:absolute;top:8px;right:8px;min-width:24px;height:24px;padding:0 6px;border-radius:999px;background:var(--blue);color:#fff!important;font-size:13px!important;font-weight:950!important;display:flex;align-items:center;justify-content:center}
+.food-inline-qty{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px;padding-top:9px;border-top:1px solid var(--line)}
+.food-inline-qty button{width:36px;height:36px;border:0;border-radius:999px;background:var(--blueSoft);color:var(--blue);font-size:22px;font-weight:950;line-height:1}
+.food-inline-qty strong{min-width:28px;text-align:center;font-size:18px}
+.line{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.line:last-child{border-bottom:0}.foodname{font-size:17px;font-weight:900;line-height:1.2}.calc{color:var(--muted);font-size:14px;margin-top:3px}
+.qty-row{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap}.qty{display:flex;align-items:center;gap:8px}
+.qty button{width:40px;height:40px;border:0;border-radius:11px;background:var(--blueSoft);font-size:20px;font-weight:900}
+.qty b{min-width:20px;text-align:center;font-size:18px}.line-total{color:var(--blue);font-weight:900;font-size:17px}
+.del{align-self:center;border:0;background:var(--redSoft);color:var(--red);border-radius:12px;padding:11px 13px;font-weight:800}
+.total{display:flex;justify-content:space-between;gap:10px;align-items:flex-end;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.total .label{font-size:15px;color:#344054}.total .value{font-size:27px;font-weight:950;color:var(--blue)}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.btn{border:0;border-radius:13px;padding:14px 10px;font-size:16px;font-weight:900}
+.primary{background:var(--blueSoft);color:var(--blue)}.success{background:var(--green);color:#fff}
+.secondary{background:#f2f4f7;color:#344054}.danger{background:var(--redSoft);color:var(--red)}
+.addcustom{width:100%;border:1.5px dashed var(--blue);background:#fff;color:var(--blue);border-radius:12px;padding:12px;font-weight:850;margin-top:10px}
+input,select{width:100%;min-height:48px;border:1px solid var(--line);border-radius:12px;padding:11px 12px;font-size:16px;margin-bottom:9px;background:#fff}
+.hidden{display:none!important}.empty{text-align:center;color:var(--muted);padding:18px 8px}
+.entry{border:1px solid var(--line);border-radius:13px;padding:11px;margin-bottom:8px}
+.entryhead{display:flex;justify-content:space-between;gap:10px;font-weight:850;align-items:flex-start}.entry small{color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{border:1px solid var(--line);border-radius:13px;padding:10px;text-align:center;background:#fbfdff}.report-controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.report-box{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fbfdff;margin-top:10px}.report-box h3{margin:0 0 8px;font-size:16px}.month-line{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)}.month-line:last-child{border-bottom:0}
+.stat .n{font-weight:950;font-size:17px}.stat .l{font-size:11px;color:var(--muted)}
+.manage-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.smallbtn{border:0;border-radius:10px;padding:8px 10px;font-weight:800}
+.editbtn{background:var(--blueSoft);color:var(--blue)}
+.tabs{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);z-index:20}
+.tabinner{max-width:760px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr)}
+.tab{border:0;background:none;padding:12px 2px;color:var(--muted);font-weight:850;font-size:13px}.tab.active{color:var(--blue)}
+
+/* V7 report dashboard */
+.report-switch{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#f2f4f7;padding:5px;border-radius:14px;margin-bottom:12px}
+.report-switch button{border:0;background:transparent;padding:11px 8px;border-radius:11px;font-weight:850;color:#475467;font-size:15px}
+.report-switch button.active{background:#fff;color:var(--blue);box-shadow:0 1px 6px rgba(16,24,40,.10)}
+.report-filter{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:13px}
+.report-filter label{font-size:12px;color:var(--muted);font-weight:750;display:block;margin-bottom:5px}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.kpi{border:1px solid var(--line);border-radius:15px;padding:12px 10px;text-align:center;background:#fff}
+.kpi .icon{font-size:21px;margin-bottom:4px}.kpi .num{font-size:20px;font-weight:950}.kpi .lab{font-size:12px;color:var(--muted);margin-top:3px}
+.kpi.orders{background:#f4f8ff}.kpi.income{background:#f2fbf5}.kpi.expense{background:#fff5f4}.kpi.profit{background:#fff9ed}
+.kpi.income .num{color:#18864b}.kpi.expense .num{color:#c7312c}.kpi.profit .num{color:#9a6300}
+.chart-card{overflow:hidden}
+.chart-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px}
+.chart-head h3{font-size:16px;margin:0;line-height:1.25}
+.legend{display:flex;gap:12px;font-size:12px;color:#475467;margin:8px 0 10px}
+.legend span{display:flex;align-items:center;gap:5px}.dot{width:11px;height:11px;border-radius:3px;display:inline-block}
+.dot.in{background:#34b45f}.dot.out{background:#ee4a43}
+.chart-scroll{overflow-x:auto;padding-bottom:2px}
+.chart{height:230px;min-width:560px;display:flex;align-items:stretch;gap:7px;padding:8px 4px 0;border-bottom:1px solid var(--line);background:repeating-linear-gradient(to top,transparent 0,transparent 53px,#edf1f5 54px)}
+.daycol{flex:1;min-width:65px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;position:relative}
+.bars{height:175px;width:100%;display:flex;align-items:flex-end;justify-content:center;gap:6px}
+.barwrap{height:100%;width:25px;display:flex;align-items:flex-end;position:relative}
+.bar{width:100%;min-height:2px;border-radius:6px 6px 2px 2px;position:relative}
+.bar.in{background:#34b45f}.bar.out{background:#ee4a43}
+.barval{position:absolute;top:-19px;left:50%;transform:translateX(-50%);font-size:10px;font-weight:850;white-space:nowrap;color:#344054}
+.daylab{font-size:11px;font-weight:800;color:#344054;margin-top:7px;text-align:center;line-height:1.2}
+.daycol.selected{background:#edf5ff;border-radius:10px 10px 0 0}
+.daycol.selected .daylab{color:var(--blue)}
+.month-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.month-mini{border:1px solid var(--line);border-radius:13px;padding:10px;background:#fbfdff}
+.month-mini span{display:block;color:var(--muted);font-size:12px}.month-mini b{display:block;margin-top:3px;font-size:17px}
+.paid-row{border-bottom:1px solid var(--line);padding:11px 0}.paid-row:last-child{border-bottom:0}
+.paid-main{display:flex;justify-content:space-between;gap:10px;font-weight:850}.paid-sub{font-size:12px;color:var(--muted);margin-top:3px}
+@media(min-width:520px){.kpis{grid-template-columns:repeat(4,1fr)}}
+
+
+.cat-manage-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:7px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.cat-manage-row:last-child{border-bottom:0}
+.cat-manage-name{font-weight:850;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cat-mini-btn{border:0;border-radius:10px;padding:9px 10px;font-weight:800}
+.cat-edit{background:var(--blueSoft);color:var(--blue)}
+.cat-delete{background:var(--redSoft);color:var(--red)}
+
+
+/* V10 - NVL categories + item sales stats */
+.ex-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.ex-cat-row{display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px}
+.ex-cat-chip{flex:0 0 auto;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;font-weight:800;font-size:13px}
+.ex-cat-chip.active{background:#fff3e6;border-color:#f4b66f;color:#a65300}
+.nvl-manage-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:7px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.nvl-manage-row:last-child{border-bottom:0}
+.sales-items{display:grid;gap:8px}
+.sales-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:13px;padding:11px 12px;background:#fbfdff}
+.sales-item-name{font-weight:850;line-height:1.2}
+.sales-item-sub{font-size:12px;color:var(--muted);margin-top:3px}
+.sales-item-qty{font-size:18px;font-weight:950;color:var(--blue);white-space:nowrap}
+.period-toggle{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#f2f4f7;border-radius:12px;padding:4px;margin-bottom:10px}
+.period-toggle button{border:0;background:transparent;border-radius:9px;padding:9px;font-weight:850;color:var(--muted)}
+.period-toggle button.active{background:#fff;color:var(--blue);box-shadow:0 1px 5px rgba(16,24,40,.09)}
+.unit-row{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+@media(max-width:420px){.ex-grid,.unit-row{grid-template-columns:1fr}}
+
+
+/* V11 - Login, roles, realtime sync */
+.auth-screen{position:fixed;inset:0;background:linear-gradient(145deg,#0f5bb7,#083b7b);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px}
+.auth-card{width:min(430px,100%);background:#fff;border-radius:22px;padding:22px;box-shadow:0 18px 60px rgba(0,0,0,.25)}
+.auth-logo{width:64px;height:64px;border-radius:18px;background:#edf5ff;display:grid;place-items:center;font-size:34px;margin:0 auto 10px}
+.auth-card h1{text-align:center;margin:0 0 5px;font-size:25px}.auth-card p{text-align:center;color:var(--muted);margin:0 0 18px}
+.auth-msg{min-height:20px;color:var(--red);font-size:13px;margin:-2px 0 8px;text-align:center}
+.userbar{max-width:760px;margin:-6px auto 12px;background:#fff;border:1px solid var(--line);border-radius:13px;padding:9px 11px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.userinfo{min-width:0}.userinfo b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.userinfo span{font-size:11px;color:var(--muted)}
+.logout-btn{border:0;background:#f2f4f7;border-radius:10px;padding:9px 11px;font-weight:800;color:#344054}
+.sync-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#22a857;margin-right:5px}.sync-dot.off{background:#f59e0b}
+.staff-note{background:#fff8e7;border:1px solid #f5d58c;border-radius:13px;padding:10px 12px;font-size:13px;color:#805500;margin-bottom:12px}
+
+
+/* V12 - giao diện bán hàng mới */
+:root{--v12blue:#0b66d8;--v12soft:#f3f7fc}
+.app{max-width:980px}
+#orderScreen>.card:first-child{padding:12px}
+.categories{gap:9px;padding:2px 1px 10px;margin-bottom:8px}
+.cat{padding:10px 15px;font-size:14px;background:#fff}
+.cat.active{background:var(--v12blue);box-shadow:0 3px 10px rgba(11,102,216,.18)}
+.menu{gap:12px}
+.food{min-height:156px;padding:13px;border-radius:18px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+.food.selected{padding:12px}
+.food:before{content:"🦪";height:54px;display:flex;align-items:center;justify-content:center;font-size:38px;margin:-3px 0 7px;background:linear-gradient(180deg,#f8fbff,#fff);border-radius:13px}
+.food[data-kind="drink"]:before{content:"🥤"}
+.food[data-kind="beer"]:before{content:"🍺"}
+.food[data-kind="shrimp"]:before{content:"🍤"}
+.food[data-kind="snail"]:before{content:"🐚"}
+.food b{font-size:16px;margin-bottom:5px;padding-right:20px}
+.food .food-price{font-size:18px}
+.food-badge{top:9px;right:9px;background:#16a34a}
+.food-inline-qty{margin-top:9px;padding-top:8px;gap:8px}
+.food-inline-qty button{width:38px;height:34px;border-radius:10px;border:1px solid #b9d5fb;background:#fff}
+.food-inline-qty strong{font-size:18px}
+#orderScreen>.card:nth-child(2){position:relative}
+#orderScreen>.card:nth-child(2) .section-title h2:after{content:" (" attr(data-count) ")";color:var(--muted);font-size:14px}
+#cart .line{padding:11px 0}
+#cart .qty-row{margin-top:6px}
+.total{background:#f8fbff;border:1px solid #e2edf9;border-radius:14px;padding:13px;margin-top:14px}
+.actions .success{background:linear-gradient(135deg,#0b66d8,#0757bc)}
+@media(min-width:760px){
+  #orderScreen{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.85fr);gap:14px;align-items:start}
+  #orderScreen>.card{margin-bottom:0}
+  #orderScreen>.card:nth-child(2){position:sticky;top:10px}
+  .menu{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:759px){
+  .app{max-width:760px}
+  .food{min-height:144px}
+}
+@media(max-width:430px){
+  .cat{padding:9px 12px;font-size:13px}
+  .food{min-height:136px;padding:11px}
+  .food.selected{padding:10px}
+  .food:before{height:42px;font-size:31px}
+  .food b{font-size:15px}
+}
+
+/* V12.1 compact */
+body{font-size:13px}.topbar h1{font-size:18px}.cat{font-size:11px;padding:7px 10px}
+.menu{gap:8px}.food{min-height:86px;padding:9px;border-radius:13px}.food.selected{padding:8px}
+.food:before{display:none!important}.food b{font-size:13px;line-height:1.2;margin-bottom:3px;padding-right:18px}
+.food .food-price{font-size:15px}.food-inline-qty{margin-top:5px;padding-top:5px;gap:6px}
+.food-inline-qty button{width:30px;height:28px;font-size:15px;border-radius:8px}.food-inline-qty strong{font-size:15px}
+.food-badge{min-width:22px;height:22px;font-size:11px;top:6px;right:6px}
+#orderScreen>.card{padding:10px}#orderScreen>.card:nth-child(2) .section-title h2{font-size:16px}
+#cart .line{padding:6px 0}#cart .line b{font-size:12px;line-height:1.2}#cart .muted{font-size:10px}
+#cart .money{font-size:12px}#cart button{padding:5px 7px;font-size:11px}
+.total{padding:8px;margin-top:8px;font-size:12px}.total strong{font-size:17px}.actions{gap:6px}.actions button{padding:9px 10px;font-size:12px}
+@media(min-width:760px){#orderScreen{grid-template-columns:minmax(0,1.35fr) minmax(350px,.9fr);gap:9px}.menu{grid-template-columns:repeat(3,1fr)}#orderScreen>.card:nth-child(2){position:sticky;top:8px}}
+@media(max-width:759px){.menu{grid-template-columns:repeat(2,1fr)}.food{min-height:82px}}
+@media(max-width:430px){body{font-size:12px}.topbar h1{font-size:17px}.cat{font-size:10px;padding:6px 8px}.food{min-height:78px;padding:8px}.food b{font-size:12px}.food .food-price{font-size:14px}}
+
+/* V13 - thanh toán, ngân sách sinh hoạt, trạng thái đồng bộ */
+.tabinner{grid-template-columns:repeat(5,1fr)}
+.sync-banner{display:none;margin:-5px 0 10px;padding:9px 12px;border-radius:11px;font-size:12px;font-weight:800}
+.sync-banner.show{display:block}.sync-banner.offline{background:#fff7e6;color:#8a5700;border:1px solid #f5d58c}
+.pay-modal{position:fixed;inset:0;background:rgba(16,24,40,.48);z-index:1000;display:grid;place-items:center;padding:16px}
+.pay-box{width:min(430px,100%);background:#fff;border-radius:20px;padding:18px;box-shadow:0 20px 70px rgba(0,0,0,.28)}
+.pay-box h2{margin:0 0 5px}.pay-big{font-size:29px;font-weight:950;color:var(--blue);margin:8px 0 14px}
+.pay-methods{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.pay-method{border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px;font-weight:850}
+.pay-method.active{background:var(--blueSoft);border-color:var(--blue);color:var(--blue)}
+.pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pay-change{background:#f2fbf5;border:1px solid #ccebd7;border-radius:12px;padding:10px 12px;margin:2px 0 10px}
+.family-budget{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end}
+.budget-track{height:10px;background:#edf1f5;border-radius:999px;overflow:hidden;margin-top:8px}
+.budget-fill{height:100%;background:var(--blue);width:0}
+.family-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.family-mini{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fbfdff}
+.family-mini span{display:block;color:var(--muted);font-size:11px}.family-mini b{font-size:16px}
+@media(max-width:430px){.tab{font-size:10px}.pay-grid{grid-template-columns:1fr}}
+
+
+/* V13.5 */
+.menu-search{display:flex;gap:8px;margin-bottom:10px}.menu-search input{margin:0}
+.dashboard-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.dash-mini{border:1px solid var(--line);border-radius:14px;padding:11px;background:#fbfdff}
+.dash-mini span{display:block;color:var(--muted);font-size:11px;margin-bottom:4px}.dash-mini b{font-size:18px}
+.dash-wide{grid-column:1/-1}
+.top-dish-row{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)}
+.top-dish-row:last-child{border-bottom:0}
+.export-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.conflict-note{color:#a15b00!important;font-weight:800}
+@media(max-width:560px){.export-actions{grid-template-columns:1fr}.dashboard-grid{grid-template-columns:1fr}.dash-wide{grid-column:auto}}
+
+
+/* V13.5.3 - fix cuộn hết danh sách, không bị thanh menu dưới che */
+html{height:auto;min-height:100%;overflow-y:auto}
+body{height:auto;min-height:100vh;overflow-y:auto;padding-bottom:105px!important}
+#familyView{height:auto!important;max-height:none!important;overflow:visible!important;padding-bottom:115px!important}
+#familyList{height:auto!important;max-height:none!important;overflow:visible!important;padding-bottom:25px}
+.tabs{z-index:900}
+@media(max-width:700px){
+ body{padding-bottom:120px!important}
+ #familyView{padding-bottom:135px!important}
+}
+
+
+.family-net-positive{color:#16803c}.family-net-negative{color:#c62828}
+#familyIncomeList{padding-bottom:6px}
+
+.family-report-toggle{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#eef1f5;border-radius:14px;padding:4px;margin:6px 0 12px}
+.family-report-mode{border:0;background:transparent;border-radius:11px;padding:12px;font-weight:900;color:#344054}
+.family-report-mode.active{background:#fff;color:var(--blue);box-shadow:0 2px 7px rgba(0,0,0,.08)}
+.family-report-dates{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.family-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.family-kpi{border:1px solid var(--line);border-radius:15px;padding:13px 8px;text-align:center;background:#fbfdff}
+.family-kpi-icon{font-size:20px;margin-bottom:4px}.family-kpi b{display:block;font-size:19px}.family-kpi span{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.family-dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+@media(max-width:650px){.family-kpis{grid-template-columns:1fr 1fr}.family-report-dates{grid-template-columns:1fr}.family-dashboard-grid{grid-template-columns:1fr}}
+
+
+/* =========================
+   V14 MOBILE UI
+   Giữ nguyên dữ liệu & logic V13.5.5
+   ========================= */
+:root{
+  --mobile-nav-h:68px;
+}
+button,input,select{touch-action:manipulation}
+.btn{min-height:44px}
+.tab{min-height:58px}
+@media(max-width:700px){
+  html,body{background:#f4f7fb}
+  body{padding-bottom:calc(var(--mobile-nav-h) + 34px)!important}
+  .app{padding:10px 10px 0!important}
+  .card{border-radius:18px!important;padding:14px!important;margin-bottom:10px!important;box-shadow:0 2px 10px rgba(16,24,40,.04)}
+  .section-title{margin-bottom:10px}
+  .section-title h2{font-size:18px!important}
+  label{font-size:12px}
+  input,select{min-height:48px!important;border-radius:13px!important;font-size:16px!important;padding:10px 12px!important}
+  .grid2{grid-template-columns:1fr!important;gap:7px!important}
+
+  /* Menu dưới kiểu app */
+  .tabs{
+    position:fixed!important;left:8px!important;right:8px!important;bottom:8px!important;
+    width:auto!important;height:var(--mobile-nav-h)!important;
+    border:1px solid #e5eaf1!important;border-radius:20px!important;
+    background:rgba(255,255,255,.97)!important;
+    box-shadow:0 10px 35px rgba(16,24,40,.16)!important;
+    padding:5px!important;z-index:950!important;
+  }
+  .tabinner{height:100%;grid-template-columns:repeat(5,1fr)!important;gap:2px!important}
+  .tab{
+    border-radius:15px!important;padding:5px 2px!important;font-size:10px!important;
+    display:flex!important;flex-direction:column!important;justify-content:center!important;
+    align-items:center!important;gap:2px!important;line-height:1.1!important;
+  }
+  .tab.active{background:#eaf3ff!important;color:#075fd8!important}
+  .tab .ico,.tab .icon{font-size:19px!important}
+
+  /* Bàn bán hàng */
+  #tablesGrid,.tables{gap:8px!important}
+  .table-card,.seat{
+    border-radius:16px!important;min-height:76px!important;
+  }
+
+  /* Món ăn */
+  .menu-search{
+    position:sticky;top:0;z-index:40;background:#f4f7fb;
+    padding:5px 0 7px;margin-bottom:3px!important
+  }
+  .categories{
+    flex-wrap:nowrap!important;overflow-x:auto!important;scrollbar-width:none;
+    padding-bottom:5px!important
+  }
+  .categories::-webkit-scrollbar{display:none}
+  .category,.cat{
+    flex:0 0 auto!important;white-space:nowrap!important;min-height:40px!important
+  }
+  .menu{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .dish,.menu-item{
+    border-radius:16px!important;min-height:105px!important;padding:11px!important
+  }
+
+  /* Giỏ hàng / nút thao tác */
+  .cart{border-radius:18px!important}
+  .qty button,.cart button[data-plus],.cart button[data-minus]{
+    min-width:42px!important;min-height:42px!important;font-size:18px!important
+  }
+  .actions{gap:8px!important}
+  .actions .btn{min-height:48px!important;border-radius:14px!important}
+
+  /* Thanh toán từ dưới lên trên điện thoại */
+  .pay-modal{align-items:end!important;padding:0!important}
+  .pay-box{
+    width:100%!important;max-width:none!important;border-radius:24px 24px 0 0!important;
+    padding:18px 15px calc(20px + env(safe-area-inset-bottom))!important;
+    max-height:90vh!important;overflow-y:auto!important
+  }
+  .pay-big{font-size:32px!important}
+  .pay-method{min-height:54px!important;font-size:15px!important}
+
+  /* KPI Tổng kết + Sinh hoạt */
+  .kpis,.family-kpis{grid-template-columns:repeat(2,1fr)!important;gap:8px!important}
+  .kpi,.family-kpi{border-radius:16px!important;padding:12px 7px!important;min-height:102px}
+  .kpi .num,.family-kpi b{font-size:19px!important}
+  .dashboard-grid,.family-dashboard-grid{grid-template-columns:1fr!important}
+  .dash-wide{grid-column:auto!important}
+  .dash-mini{border-radius:15px!important;padding:12px!important}
+  .family-summary{grid-template-columns:repeat(2,1fr)!important}
+  .family-mini{border-radius:14px!important}
+  .family-report-toggle{position:sticky;top:0;z-index:35}
+  .family-report-mode{min-height:44px!important}
+  .family-report-dates{grid-template-columns:1fr!important}
+
+  /* Danh sách thu chi dễ đọc */
+  #familyIncomeList .line,#familyList .line{
+    background:#fff;border:1px solid #edf0f4!important;border-radius:14px!important;
+    padding:11px!important;margin-bottom:7px!important
+  }
+  #familyIncomeList .del,#familyList .del{min-width:48px;min-height:42px;border-radius:12px!important}
+  #familyView{padding-bottom:calc(var(--mobile-nav-h) + 70px)!important}
+
+  /* Báo cáo */
+  .export-actions{grid-template-columns:1fr!important}
+}
+@media(max-width:380px){
+  .menu{grid-template-columns:1fr!important}
+  .kpis,.family-kpis,.family-summary{grid-template-columns:1fr 1fr!important}
+  .tab{font-size:9px!important}
+}
+
+</style>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+
+</head>
+<body>
+
+<div id="authScreen" class="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">🦪</div>
+    <h1>Hàu 5K</h1>
+    <p>Đăng nhập để bán hàng và đồng bộ</p>
+    <input id="loginEmail" type="email" autocomplete="username" placeholder="Email">
+    <input id="loginPassword" type="password" autocomplete="current-password" placeholder="Mật khẩu">
+    <div style="font-size:12px;color:#667085;margin:6px 0">Bản Android ổn định • chưa bật chức năng in</div>
+<div id="authMsg" class="auth-msg"></div>
+    <button id="loginBtn" class="btn success" style="width:100%">Đăng nhập</button>
+    <button id="forgotBtn" type="button" style="width:100%;margin-top:9px;border:0;background:transparent;color:#0f5bb7;font-weight:800;padding:9px">Quên mật khẩu?</button>
+  </div>
+</div>
+
+<div class="app" id="appRoot">
+  <div id="userBar" class="userbar hidden">
+    <div class="userinfo">
+      <b id="userEmail">-</b>
+      <span><i id="syncDot" class="sync-dot"></i><span id="roleText">Đang kết nối...</span></span>
+    </div>
+    <button id="logoutBtn" class="logout-btn">Đăng xuất</button>
+  </div>
+  <div id="staffNote" class="staff-note hidden">👤 Chế độ nhân viên: chỉ sử dụng phần Bán hàng.</div>
+  <div id="syncBanner" class="sync-banner offline">⚠️ Mất kết nối — dữ liệu đang được giữ trên máy.</div>
+  <div id="mainTop" class="topbar">
+    <div><h1>Hàu 5K <span style='font-size:12px;background:#fff;color:#0b66d8;padding:3px 7px;border-radius:8px;vertical-align:middle'>V14.1A</span></h1><div class="small" id="today"></div></div>
+    <span class="badge" id="openBadge">0 bàn đang gọi</span>
+  </div>
+
+  <div id="orderTop" class="topbar hidden">
+    <div class="order-head">
+      <button class="back" id="backBtn">←</button>
+      <div class="order-title-wrap">
+        <div class="order-title" id="currentTable">Bàn 1</div>
+        <div class="order-sub" id="savedHint">Đơn mới</div>
+      </div>
+    </div>
+    <span class="badge">Đang mở</span>
+  </div>
+
+  <section id="salesView">
+    <div id="tableScreen">
+      <div class="card">
+        <div class="section-title"><h2>Chọn bàn / Mang về</h2></div>
+        <div class="tables" id="tableGrid"></div>
+      </div>
+    </div>
+
+    <div id="orderScreen" class="hidden">
+      <div class="card">
+        <div class="menu-search"><input id="menuSearch" placeholder="🔎 Tìm món nhanh..." autocomplete="off"></div>
+        <div class="categories" id="categoryTabs"></div>
+        <div class="menu" id="menuGrid"></div>
+      </div>
+
+      <div class="card">
+        <div class="section-title"><h2>Món đã gọi</h2></div>
+        <div id="cart"></div>
+        <button class="addcustom" id="customBtn">+ Thêm món tạm thời</button>
+        <div class="total"><div><div class="label">Tổng cộng:</div><div class="value" id="cartTotal">0đ</div></div></div>
+        <div class="actions">
+          <button class="btn primary" id="saveBtn">💾 Lưu đơn</button>
+          <button class="btn success" id="payBtn">💵 Thanh toán</button>
+          <button class="btn secondary" id="returnBtn">← Về bàn</button>
+          <button class="btn danger" id="cancelBtn">Hủy đơn</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="expenseView" class="hidden">
+    <div class="card">
+      <div class="section-title"><h2>Mua nguyên vật liệu</h2></div>
+      <select id="exCategory"></select>
+      <div class="ex-grid">
+        <input id="exName" placeholder="Tên NVL, ví dụ: Sò lông">
+        <input id="exQty" type="number" inputmode="decimal" step="0.01" placeholder="Số lượng (nếu cần)">
+      </div>
+      <div class="ex-grid">
+        <input id="exUnit" placeholder="Đơn vị: kg, bó, chai...">
+        <input id="exAmount" type="number" inputmode="numeric" placeholder="Tổng tiền">
+      </div>
+      <input id="exNote" placeholder="Ghi chú (không bắt buộc)">
+      <button class="btn success" style="width:100%" id="saveExpense">Lưu khoản mua</button>
+    </div>
+
+    <div class="card">
+      <div class="section-title"><h2>Danh mục đầu vào</h2><strong id="nvlCatCount"></strong></div>
+      <div class="ex-grid">
+        <input id="newNvlCatName" placeholder="Ví dụ: Rau, Hải sản...">
+        <button class="btn primary" id="addNvlCategory" style="margin-bottom:9px">+ Thêm danh mục</button>
+      </div>
+      <div id="nvlCategoryList"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title"><h2>Chi hôm nay</h2><strong id="expenseTotal">0đ</strong></div>
+      <div class="ex-cat-row" id="expenseFilterCats"></div>
+      <div id="expenseList"></div>
+    </div>
+  </section>
+
+  <section id="reportView" class="hidden">
+    <div class="card">
+      <div class="section-title"><h2>📊 Tổng kết bán hàng</h2></div>
+      <div class="report-switch">
+        <button class="active" type="button">Theo ngày</button>
+        <button type="button" id="jumpMonth">Theo tháng</button>
+      </div>
+      <div class="report-filter">
+        <div>
+          <label>Chọn ngày</label>
+          <input id="reportDate" type="date" style="margin:0">
+        </div>
+        <div>
+          <label>Chọn tháng</label>
+          <input id="reportMonth" type="month" style="margin:0">
+        </div>
+      </div>
+
+      <div class="section-title"><h2 id="reportDayTitle">Tổng kết ngày</h2></div>
+      <div class="kpis">
+        <div class="kpi orders"><div class="icon">🧾</div><div class="num" id="paidCount">0</div><div class="lab">Đơn thanh toán</div></div>
+        <div class="kpi income"><div class="icon">💵</div><div class="num" id="revenue">0đ</div><div class="lab">Tổng thu</div></div>
+        <div class="kpi expense"><div class="icon">🛒</div><div class="num" id="cost">0đ</div><div class="lab">Tổng chi (NVL)</div></div>
+        <div class="kpi profit"><div class="icon">👛</div><div class="num" id="net">0đ</div><div class="lab">Thu - Chi</div></div>
+      </div>
+      <div class="dashboard-grid">
+        <div class="dash-mini"><span>Giá trị đơn trung bình</span><b id="avgTicket">0đ</b></div>
+        <div class="dash-mini"><span>So với ngày trước</span><b id="vsYesterday">—</b></div>
+        <div class="dash-mini"><span>Tiền mặt</span><b id="cashRevenue">0đ</b></div>
+        <div class="dash-mini"><span>Chuyển khoản</span><b id="transferRevenue">0đ</b></div>
+        <div class="dash-mini dash-wide"><span>Top món trong ngày</span><div id="topDishes">Chưa có dữ liệu</div></div>
+      </div>
+    </div>
+
+    <div class="card chart-card">
+      <div class="chart-head">
+        <h3>SO SÁNH THU & CHI 7 NGÀY</h3>
+        <span class="small" style="color:var(--muted)">7 ngày gần nhất</span>
+      </div>
+      <div class="legend">
+        <span><i class="dot in"></i>Tổng thu</span>
+        <span><i class="dot out"></i>Tổng chi</span>
+      </div>
+      <div class="chart-scroll"><div class="chart" id="dailyChart"></div></div>
+    </div>
+
+    <div class="card" id="monthSummaryBox">
+      <div class="section-title"><h2 id="monthTitle">Tổng kết tháng</h2></div>
+      <div class="month-summary">
+        <div class="month-mini"><span>Số đơn</span><b id="monthOrders">0</b></div>
+        <div class="month-mini"><span>Doanh thu</span><b id="monthRevenue">0đ</b></div>
+        <div class="month-mini"><span>Mua NVL</span><b id="monthCost">0đ</b></div>
+        <div class="month-mini"><span>Thu - Chi</span><b id="monthNet">0đ</b></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title"><h2>🍽️ Món đã bán</h2><strong id="soldItemCount"></strong></div>
+      <div class="period-toggle">
+        <button class="active" id="soldByDay" type="button">Theo ngày</button>
+        <button id="soldByMonth" type="button">Theo tháng</button>
+      </div>
+      <div id="soldItemsTitle" class="small" style="color:var(--muted);margin-bottom:9px"></div>
+      <div class="sales-items" id="soldItemsList"></div>
+    </div>
+
+
+    <div class="card">
+      <div class="section-title"><h2>💾 Xuất dữ liệu / Sao lưu</h2></div>
+      <div class="small" style="color:var(--muted);margin-bottom:10px">CSV mở trực tiếp bằng Excel. File JSON dùng để sao lưu dữ liệu trên máy.</div>
+      <div class="export-actions">
+        <button class="btn primary" id="exportSalesCsv">Xuất bán hàng CSV</button>
+        <button class="btn secondary" id="exportExpenseCsv">Xuất chi NVL CSV</button>
+        <button class="btn success" id="backupJson">Sao lưu JSON</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title"><h2 id="paidListTitle">Chi tiết trong ngày</h2></div>
+      <div id="paidList"></div>
+    </div>
+  </section>
+
+  <section id="menuManageView" class="hidden">
+    <div class="card">
+      <div class="section-title"><h2>Thêm / sửa món</h2></div>
+      <input id="mId" type="hidden">
+      <input id="mName" placeholder="Tên món">
+      <div class="unit-row">
+        <input id="mPrice" type="number" inputmode="numeric" placeholder="Giá bán">
+        <input id="mUnit" placeholder="Đơn vị bán: phần, con, chai...">
+      </div>
+      <select id="mCat"></select>
+      <div class="actions">
+        <button class="btn success" id="saveMenuItem">Lưu món</button>
+        <button class="btn secondary" id="cancelEdit">Làm mới</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title"><h2>Quản lý danh mục</h2><strong id="catCount"></strong></div>
+      <input id="newCatName" placeholder="Ví dụ: Bia, Nước ngọt, Combo...">
+      <button class="btn primary" id="addCategory" style="width:100%;margin-bottom:12px">+ Thêm danh mục</button>
+      <div id="categoryManageList"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title"><h2>Danh sách món</h2><strong id="menuCount"></strong></div>
+      <div id="manageList"></div>
+    </div>
+  </section>
+</div>
+
+
+<section id="familyView" class="hidden">
+  <div class="card">
+    <div class="section-title"><h2>🏠 Chi phí sinh hoạt</h2><span class="muted">Tách riêng với chi phí quán</span></div>
+    <div class="report-filter">
+      <div><label>Ngày</label><input id="familyDate" type="date"></div>
+      <div><label>Nhóm chi</label><select id="familyCat">
+        <option>Ăn uống</option><option>Tiền nhà</option><option>Điện</option><option>Nước</option>
+        <option>Xăng xe</option><option>Học phí</option><option>Mua sắm</option><option>Sức khỏe</option><option>Khác</option>
+      </select></div>
+      <div><label>Số tiền</label><input id="familyAmount" type="number" min="0" step="1000" placeholder="200000"></div>
+      <div><label>Ghi chú</label><input id="familyNote" placeholder="Ví dụ: tiền chợ"></div>
+    </div>
+    <button class="btn primary" id="addFamily">+ Thêm khoản chi</button>
+  </div>
+  <div class="card">
+    <div class="section-title"><h2>💰 Thu nhập khác</h2><span class="small">Ngoài doanh thu bán quán</span></div>
+    <div class="grid2">
+      <div><label>Ngày</label><input id="familyIncomeDate" type="date"></div>
+      <div><label>Nguồn thu</label>
+        <select id="familyIncomeCat">
+          <option>Thu nhập thêm</option><option>Lương</option><option>Bán hàng ngoài</option>
+          <option>Tiền cho thuê</option><option>Được hoàn tiền</option><option>Khác</option>
+        </select>
+      </div>
+      <div><label>Số tiền</label><input id="familyIncomeAmount" type="number" min="0" step="1000" placeholder="Ví dụ: 500000"></div>
+      <div><label>Ghi chú</label><input id="familyIncomeNote" placeholder="Ví dụ: bán hàng online"></div>
+    </div>
+    <button class="btn success" id="addFamilyIncome">+ Thêm khoản thu</button>
+  </div>
+  <div class="card">
+    <div class="section-title"><h2>📊 Tổng kết sinh hoạt</h2></div>
+    <div class="family-report-toggle">
+      <button type="button" class="family-report-mode active" data-family-mode="day">Theo ngày</button>
+      <button type="button" class="family-report-mode" data-family-mode="month">Theo tháng</button>
+    </div>
+    <div class="family-report-dates">
+      <div><label>Chọn ngày</label><input id="familyReportDay" type="date"></div>
+      <div><label>Chọn tháng</label><input id="familyReportMonth" type="month"></div>
+    </div>
+    <h3 id="familyReportTitle" style="margin:14px 0 8px">Tổng kết</h3>
+    <div class="family-kpis">
+      <div class="family-kpi"><div class="family-kpi-icon">💰</div><b id="familyKpiIncome">0đ</b><span>Tổng thu ngoài</span></div>
+      <div class="family-kpi"><div class="family-kpi-icon">🛒</div><b id="familyKpiExpense">0đ</b><span>Tổng chi sinh hoạt</span></div>
+      <div class="family-kpi"><div class="family-kpi-icon">👛</div><b id="familyKpiNet">0đ</b><span>Thu - Chi</span></div>
+      <div class="family-kpi"><div class="family-kpi-icon">🧾</div><b id="familyKpiCount">0</b><span>Số khoản thu/chi</span></div>
+    </div>
+    <div class="family-dashboard-grid">
+      <div class="dash-mini"><span>Chi trung bình / khoản</span><b id="familyAvgExpense">0đ</b></div>
+      <div class="dash-mini"><span>So với kỳ trước</span><b id="familyVsPrevious">—</b></div>
+      <div class="dash-mini dash-wide"><span>Nhóm chi nhiều nhất</span><b id="familyTopExpenseCat">—</b></div>
+      <div class="dash-mini dash-wide"><span>Nguồn thu nhiều nhất</span><b id="familyTopIncomeCat">—</b></div>
+    </div>
+    <div class="section-title" style="margin-top:18px"><h2>Chi tiết tháng</h2><strong id="familyBalance">0đ</strong></div>
+    <div class="family-summary">
+      <div class="family-mini"><span>Tổng thu ngoài</span><b id="familyIncomeTotal">0đ</b></div>
+      <div class="family-mini"><span>Tổng chi sinh hoạt</span><b id="familyTotal">0đ</b></div>
+      <div class="family-mini"><span>Thu - Chi</span><b id="familyNet">0đ</b></div>
+    </div>
+    <div><label>Chọn tháng</label><input id="familyMonth" type="month"></div>
+    <div class="family-budget">
+      <div><label>Ngân sách sinh hoạt tháng</label><input id="familyBudget" type="number" min="0" step="100000" placeholder="15000000" style="margin:0"></div>
+      <button class="btn primary" id="saveFamilyBudget">Lưu</button>
+    </div>
+    <div class="budget-track"><div id="familyBudgetFill" class="budget-fill"></div></div>
+    <div id="familyBudgetText" class="small" style="color:var(--muted);margin-top:5px"></div>
+    <div id="familyCategorySummary" class="family-summary"></div>
+    <div class="section-title" style="margin-top:14px"><h3 style="margin:0">Khoản thu trong tháng</h3></div>
+    <div id="familyIncomeList"></div>
+    <div class="section-title" style="margin-top:16px"><h3 style="margin:0">Khoản chi trong tháng</h3></div>
+    <div id="familyList" style="margin-top:4px"></div>
+  </div>
+</section>
+
+
+<div id="payModal" class="pay-modal hidden">
+  <div class="pay-box">
+    <h2>Thanh toán <span id="paySeat"></span></h2>
+    <div class="small" style="color:var(--muted)">Tổng cần thanh toán</div>
+    <div class="pay-big" id="payOriginalTotal">0đ</div>
+    <div class="pay-methods">
+      <button type="button" class="pay-method active" data-pay-method="cash">💵 Tiền mặt</button>
+      <button type="button" class="pay-method" data-pay-method="transfer">🏦 Chuyển khoản</button>
+    </div>
+    <div class="pay-grid">
+      <div><label>Giảm giá</label><input id="payDiscount" type="number" min="0" step="1000" value="0"></div>
+      <div id="cashReceivedWrap"><label>Khách đưa</label><input id="payReceived" type="number" min="0" step="1000" placeholder="Số tiền khách đưa"></div>
+    </div>
+    <div class="pay-change"><span>Cần thu: </span><strong id="payFinalTotal">0đ</strong><br><span id="payChangeText">Tiền thối: 0đ</span></div>
+    <input id="payNote" placeholder="Ghi chú thanh toán (không bắt buộc)">
+    <div class="actions">
+      <button class="btn secondary" id="closePayModal">Quay lại</button>
+      <button class="btn success" id="confirmPayBtn">Xác nhận thanh toán</button>
+    </div>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tabinner">
+    <button class="tab active" data-tab="sales">🧾<br>Bán hàng</button>
+    <button class="tab" data-tab="expense">🛒<br>Mua NVL</button>
+    <button class="tab" data-tab="menuManage">⚙️<br>Quản lý món</button>
+    <button class="tab" data-tab="report">📊<br>Tổng kết</button>
+<button class="tab" data-tab="family">🏠<br>Sinh hoạt</button>
+  </div>
+</div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDipLTc_SWSh8zCFkOGavVUFk8KVAuGtDo",
+  authDomain: "hau5k-28c70.firebaseapp.com",
+  databaseURL: "https://hau5k-28c70-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "hau5k-28c70",
+  storageBucket: "hau5k-28c70.firebasestorage.app",
+  messagingSenderId: "950364697529",
+  appId: "1:950364697529:web:117917231ffdec65ab3c68"
+};
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
+const db=firebase.database();
+const OWNER_UID="5gsK9J2RnyMOgmDeeO23iX2MzCY2";
+let cloudReady=false,currentFirebaseUser=null,isOwner=false;
+let cloudListeners=[];
+
+const cloudMap={
+ "hau5k_menu_v5":"menu",
+ "hau5k_categories_v9":"categories",
+ "hau5k_nvl_categories_v10":"nvlCategories",
+ "hau5k_expenses_v4":"expenses"
+};
+function normalizeCollection(v){
+ if(!v)return [];
+ if(Array.isArray(v))return v.filter(Boolean);
+ return Object.values(v).filter(Boolean).sort((a,b)=>Number(b.id||0)-Number(a.id||0));
+}
+function localPut(k,v){localStorage.setItem(k,JSON.stringify(v));}
+function clearCloudListeners(){cloudListeners.forEach(r=>r.off());cloudListeners=[]}
+function listenRef(path,cb,onReady){
+ const ref=db.ref(path);
+ let first=true;
+ ref.on("value",s=>{
+   try{
+     cb(s.val());
+   }catch(err){
+     console.error("Lỗi xử lý dữ liệu "+path+":",err);
+   }finally{
+     if(first){
+       first=false;
+       if(onReady)onReady();
+     }
+   }
+ },e=>{
+   console.error("Firebase read "+path+":",e);
+   setSyncState(false,(isOwner?"Chủ quán":"Nhân viên")+" • lỗi đồng bộ");
+ });
+ cloudListeners.push(ref);
+}
+function setSyncState(ok,text){
+ const d=document.getElementById("syncDot");if(d)d.classList.toggle("off",!ok);
+ const r=document.getElementById("roleText");if(r)r.textContent=text;
+ const banner=document.getElementById("syncBanner");
+ if(banner){banner.classList.toggle("show",!ok);banner.textContent=ok?"":"⚠️ Kết nối chưa ổn định — kiểm tra mạng trước khi tiếp tục bán hàng."}
+}
+
+const defaultNvlCategories=[
+ {id:"hai-san",name:"Hải sản",locked:true},
+ {id:"rau",name:"Rau - hành - tỏi - ớt",locked:true},
+ {id:"gia-vi",name:"Gia vị",locked:true},
+ {id:"do-uong",name:"Bia - nước ngọt",locked:true},
+ {id:"bao-bi",name:"Bao bì - hộp - túi",locked:true},
+ {id:"nhien-lieu",name:"Gas - đá - nhiên liệu",locked:true},
+ {id:"khac",name:"Khác",locked:true}
+];
+let expenseFilterCat="all";
+let soldPeriod="day";
+
+function getNvlCategories(){
+ let cats=read("hau5k_nvl_categories_v10",null);
+ if(!Array.isArray(cats)||!cats.length){
+   cats=defaultNvlCategories.map(x=>({...x}));
+   write("hau5k_nvl_categories_v10",cats);
+ }
+ defaultNvlCategories.filter(x=>x.locked).forEach(d=>{
+   if(!cats.some(c=>c.id===d.id))cats.push({...d});
+ });
+ return cats;
+}
+function setNvlCategories(v){write("hau5k_nvl_categories_v10",v)}
+function nvlCatName(id){const c=getNvlCategories().find(x=>x.id===id);return c?c.name:"Khác"}
+
+function renderNvlCategories(){
+ const cats=getNvlCategories();
+ const sel=document.getElementById("exCategory");
+ if(sel){
+   const old=sel.value;
+   sel.innerHTML=cats.map(c=>`<option value="${c.id}">${c.name}</option>`).join("");
+   if(cats.some(c=>c.id===old))sel.value=old;
+ }
+ const list=document.getElementById("nvlCategoryList");
+ if(list){
+   document.getElementById("nvlCatCount").textContent=cats.length+" danh mục";
+   list.innerHTML=cats.map(c=>`<div class="nvl-manage-row">
+     <div class="cat-manage-name">${c.name}${c.locked?' <span style="font-size:11px;color:var(--muted)">(mặc định)</span>':''}</div>
+     <button class="cat-mini-btn cat-edit" data-nvl-edit="${c.id}">Sửa</button>
+     <button class="cat-mini-btn cat-delete" data-nvl-del="${c.id}" ${c.locked?'disabled style="opacity:.35"':''}>Xóa</button>
+   </div>`).join("");
+   list.querySelectorAll("[data-nvl-edit]").forEach(b=>b.addEventListener("click",()=>editNvlCategory(b.dataset.nvlEdit)));
+   list.querySelectorAll("[data-nvl-del]").forEach(b=>b.addEventListener("click",()=>deleteNvlCategory(b.dataset.nvlDel)));
+ }
+ renderExpenseFilters();
+}
+
+function addNvlCategory(){
+ const input=document.getElementById("newNvlCatName");
+ const name=input.value.trim();
+ if(!name){alert("Nhập tên danh mục đầu vào.");return}
+ const cats=getNvlCategories();
+ if(cats.some(c=>c.name.toLowerCase()===name.toLowerCase())){alert("Danh mục này đã có.");return}
+ cats.push({id:"nvl_"+Date.now(),name});
+ setNvlCategories(cats);input.value="";
+ renderNvlCategories();
+}
+function editNvlCategory(id){
+ const cats=getNvlCategories(),c=cats.find(x=>x.id===id);if(!c)return;
+ const name=prompt("Đổi tên danh mục:",c.name);if(name===null)return;
+ const clean=name.trim();if(!clean)return;
+ if(cats.some(x=>x.id!==id&&x.name.toLowerCase()===clean.toLowerCase())){alert("Tên danh mục đã có.");return}
+ c.name=clean;setNvlCategories(cats);renderNvlCategories();refreshExpenses();
+}
+function deleteNvlCategory(id){
+ const cats=getNvlCategories(),c=cats.find(x=>x.id===id);if(!c||c.locked)return;
+ const used=getExpenses().filter(x=>x.category===id).length;
+ if(!confirm(used?`Danh mục "${c.name}" đang có ${used} khoản mua. Xóa sẽ chuyển sang "Khác". Tiếp tục?`:`Xóa danh mục "${c.name}"?`))return;
+ if(used)setExpenses(getExpenses().map(x=>x.category===id?{...x,category:"khac"}:x));
+ setNvlCategories(cats.filter(x=>x.id!==id));
+ if(expenseFilterCat===id)expenseFilterCat="all";
+ renderNvlCategories();refreshExpenses();refreshReport();
+}
+
+function renderExpenseFilters(){
+ const el=document.getElementById("expenseFilterCats");if(!el)return;
+ const cats=getNvlCategories();
+ el.innerHTML=`<button class="ex-cat-chip ${expenseFilterCat==="all"?"active":""}" data-excat="all">Tất cả</button>`+
+ cats.map(c=>`<button class="ex-cat-chip ${expenseFilterCat===c.id?"active":""}" data-excat="${c.id}">${c.name}</button>`).join("");
+ el.querySelectorAll("[data-excat]").forEach(b=>b.addEventListener("click",()=>{
+   expenseFilterCat=b.dataset.excat;renderExpenseFilters();refreshExpenses();
+ }));
+}
+
+const defaultCategories=[
+ {id:"hau",name:"Hàu",locked:true},
+ {id:"30",name:"Món 30k",locked:true},
+ {id:"45",name:"Món 45k",locked:true},
+ {id:"79",name:"Món 79k",locked:true},
+ {id:"bia",name:"Bia"},
+ {id:"nuocngot",name:"Nước ngọt"},
+ {id:"khac",name:"Món khác",locked:true}
+];
+const defaultMenu=[
+ {id:1,name:"Hàu mỡ hành",price:5000,cat:"hau"},
+ {id:2,name:"Hàu phô mai",price:7000,cat:"hau"},
+ {id:3,name:"Hàu trứng muối",price:7000,cat:"hau"},
+ {id:4,name:"Nghêu hấp sả",price:30000,cat:"30"},
+ {id:5,name:"Sò lông mỡ hành",price:30000,cat:"30"},
+ {id:6,name:"Ốc lác hấp sả",price:30000,cat:"30"},
+ {id:7,name:"Sò sữa mỡ hành",price:30000,cat:"30"},
+ {id:8,name:"Chả ram Bình Định",price:30000,cat:"30"},
+ {id:9,name:"Mì xào móng tay",price:45000,cat:"45"},
+ {id:10,name:"Hàu hấp",price:45000,cat:"45"},
+ {id:11,name:"Ốc hương sốt phô mai",price:79000,cat:"79"},
+ {id:12,name:"Tôm nướng",price:79000,cat:"79"}
+];
+
+const seats=["Mang về","Bàn 1","Bàn 2","Bàn 3","Bàn 4","Bàn 5","Bán app","Bán sỉ"];
+const fmt=n=>new Intl.NumberFormat("vi-VN").format(Number(n||0))+"đ";
+const dayKey=(d=new Date())=>{
+ const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");
+ return `${y}-${m}-${day}`;
+};
+const read=(k,d)=>{try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch{return d}};
+const write=(k,v)=>{
+ localPut(k,v);
+ const path=cloudMap[k];
+ if(cloudReady&&path&&isOwner){
+   db.ref(path).set(v).catch(e=>console.warn("Cloud write",path,e));
+ }
+};
+
+let current=null,cart=[],activeCat="all",currentOrderUpdatedAt=0,cartDirty=false,menuSearchText="";
+
+function getCategories(){
+ let cats=read("hau5k_categories_v9",null);
+ if(!Array.isArray(cats)||!cats.length){
+   cats=defaultCategories.map(x=>({...x}));
+   write("hau5k_categories_v9",cats);
+ }
+ // Keep legacy/core categories available so old menu data never disappears.
+ defaultCategories.filter(x=>x.locked).forEach(d=>{
+   if(!cats.some(c=>c.id===d.id))cats.push({...d});
+ });
+ // V12: đổi tên nhóm 30k cũ nhưng giữ nguyên ID để không mất món.
+ const c30=cats.find(c=>c.id==="30");
+ if(c30 && /ốc đồng giá/i.test(c30.name||"")) c30.name="Món 30k";
+ return cats;
+}
+function setCategories(v){write("hau5k_categories_v9",v)}
+
+function renderCategoryControls(){
+ const cats=getCategories();
+
+ // Dish category dropdown
+ const sel=document.getElementById("mCat");
+ const old=sel.value;
+ sel.innerHTML=cats.map(c=>`<option value="${c.id}">${c.name}</option>`).join("");
+ if(cats.some(c=>c.id===old))sel.value=old;
+ else if(cats.some(c=>c.id==="khac"))sel.value="khac";
+
+ // Sales category tabs - V12: gộp Bia + Nước ngọt thành một nhóm hiển thị.
+ const tabs=document.getElementById("categoryTabs");
+ const salesCats=cats.filter(c=>c.id!=="bia"&&c.id!=="nuocngot");
+ const drinkExists=cats.some(c=>c.id==="bia"||c.id==="nuocngot");
+ tabs.innerHTML=`<button class="cat ${activeCat==="all"?"active":""}" data-cat="all">Tất cả</button>`+
+   salesCats.map(c=>`<button class="cat ${activeCat===c.id?"active":""}" data-cat="${c.id}">${c.id==="30"?"Món 30k":c.name}</button>`).join("")+
+   (drinkExists?`<button class="cat ${activeCat==="douong"?"active":""}" data-cat="douong">🍺🥤 Bia & Nước ngọt</button>`:"");
+ tabs.querySelectorAll(".cat").forEach(b=>b.addEventListener("click",()=>{
+   activeCat=b.dataset.cat;
+   tabs.querySelectorAll(".cat").forEach(x=>x.classList.toggle("active",x===b));
+   renderMenu();
+ }));
+
+ // Manage category list
+ const list=document.getElementById("categoryManageList");
+ document.getElementById("catCount").textContent=cats.length+" danh mục";
+ list.innerHTML=cats.map(c=>`<div class="cat-manage-row">
+   <div class="cat-manage-name">${c.name}${c.locked?' <span style="font-size:11px;color:var(--muted)">(mặc định)</span>':''}</div>
+   <button class="cat-mini-btn cat-edit" data-cat-edit="${c.id}">Sửa</button>
+   <button class="cat-mini-btn cat-delete" data-cat-del="${c.id}" ${c.locked?'disabled style="opacity:.35"':''}>Xóa</button>
+ </div>`).join("");
+
+ list.querySelectorAll("[data-cat-edit]").forEach(b=>b.addEventListener("click",()=>editCategory(b.dataset.catEdit)));
+ list.querySelectorAll("[data-cat-del]").forEach(b=>b.addEventListener("click",()=>deleteCategory(b.dataset.catDel)));
+}
+
+function addCategory(){
+ const input=document.getElementById("newCatName");
+ const name=input.value.trim();
+ if(!name){alert("Nhập tên danh mục.");return}
+ const cats=getCategories();
+ if(cats.some(c=>c.name.toLowerCase()===name.toLowerCase())){alert("Danh mục này đã có.");return}
+ cats.push({id:"cat_"+Date.now(),name});
+ setCategories(cats);
+ input.value="";
+ renderCategoryControls();
+ alert("Đã thêm danh mục "+name+".");
+}
+
+function editCategory(id){
+ const cats=getCategories();
+ const c=cats.find(x=>x.id===id);if(!c)return;
+ const name=prompt("Đổi tên danh mục:",c.name);
+ if(name===null)return;
+ const clean=name.trim();
+ if(!clean)return;
+ if(cats.some(x=>x.id!==id&&x.name.toLowerCase()===clean.toLowerCase())){alert("Tên danh mục đã có.");return}
+ c.name=clean;
+ setCategories(cats);
+ renderCategoryControls();
+ renderManageList();
+ renderMenu();
+}
+
+function deleteCategory(id){
+ const cats=getCategories();
+ const c=cats.find(x=>x.id===id);if(!c||c.locked)return;
+ const used=getMenu().filter(m=>m.cat===id).length;
+ const msg=used
+   ? `Danh mục "${c.name}" đang có ${used} món. Xóa danh mục sẽ chuyển các món đó sang "Món khác". Tiếp tục?`
+   : `Xóa danh mục "${c.name}"?`;
+ if(!confirm(msg))return;
+ if(used){
+   const menu=getMenu().map(m=>m.cat===id?{...m,cat:"khac"}:m);
+   setMenu(menu);
+ }
+ setCategories(cats.filter(x=>x.id!==id));
+ if(activeCat===id)activeCat="all";
+ renderCategoryControls();
+ renderManageList();
+ renderMenu();
+}
+
+function getMenu(){
+  let m=read("hau5k_menu_v5",null);
+  if(!Array.isArray(m)||!m.length){m=defaultMenu;write("hau5k_menu_v5",m)}
+  return m;
+}
+function setMenu(v){write("hau5k_menu_v5",v)}
+function getOpen(){return read("hau5k_open_orders_v4",{})}
+function setOpen(v){write("hau5k_open_orders_v4",v)}
+function getPaid(){return read("hau5k_paid_orders_v4",[])}
+function setPaid(v){write("hau5k_paid_orders_v4",v)}
+function getExpenses(){return read("hau5k_expenses_v4",[])}
+function setExpenses(v){write("hau5k_expenses_v4",v)}
+function total(items){return items.reduce((s,x)=>s+x.price*x.qty,0)}
+
+function renderTables(){
+ const open=getOpen();
+ document.getElementById("tableGrid").innerHTML=seats.map(s=>{
+  const o=open[s],busy=o&&o.items&&o.items.length;
+  return `<button class="table-btn ${busy?"busy":""}" data-seat="${s}">
+    <span class="status">${busy?"Đang gọi":"Trống"}</span><strong>${s}</strong>
+    <div class="sum">${busy?fmt(total(o.items)):"0đ"}</div>
+  </button>`;
+ }).join("");
+ document.querySelectorAll(".table-btn").forEach(b=>b.addEventListener("click",()=>openTable(b.dataset.seat)));
+ const n=Object.values(open).filter(o=>o.items&&o.items.length).length;
+ document.getElementById("openBadge").textContent=n+" bàn đang gọi";
+}
+
+function findCartItemForMenu(m){
+ return cart.find(x=>String(x.id)===String(m.id)||(x.name===m.name&&Number(x.price)===Number(m.price)));
+}
+function renderMenu(){
+ const menu=getMenu();
+ const q=menuSearchText.trim().toLowerCase();
+ const list=menu.filter(m=>(activeCat==="all"||(activeCat==="douong"?(m.cat==="bia"||m.cat==="nuocngot"):m.cat===activeCat))&&(!q||String(m.name||"").toLowerCase().includes(q)));
+ const grid=document.getElementById("menuGrid");
+ grid.innerHTML=list.length?list.map(m=>{
+  const f=findCartItemForMenu(m);
+  const qty=f?Number(f.qty||0):0;
+  const lname=String(m.name||"").toLowerCase();
+  const kind=m.cat==="bia"?"beer":(m.cat==="nuocngot"?"drink":(lname.includes("tôm")?"shrimp":((lname.includes("ốc")||lname.includes("sò")||lname.includes("nghêu"))?"snail":"seafood")));
+  return `<div class="food ${qty>0?"selected":""}" data-kind="${kind}" data-id="${m.id}" role="button" tabindex="0">
+    ${qty>0?`<span class="food-badge">${qty}</span>`:""}
+    <b>${m.name}</b><span class="food-price">${fmt(m.price)}</span>
+    ${qty>0?`<div class="food-inline-qty">
+      <button type="button" data-menu-minus="${m.id}" aria-label="Giảm số lượng">−</button>
+      <strong>${qty}</strong>
+      <button type="button" data-menu-plus="${m.id}" aria-label="Tăng số lượng">+</button>
+    </div>`:""}
+  </div>`;
+ }).join(""):'<div class="empty" style="grid-column:1/-1">Chưa có món trong nhóm này</div>';
+
+ grid.querySelectorAll(".food").forEach(card=>{
+  const addOne=()=>{
+   const m=getMenu().find(x=>String(x.id)===String(card.dataset.id));
+   if(!m)return;
+   const f=findCartItemForMenu(m);
+   if(f)f.qty++;else cart.push({...m,unit:m.unit||"phần",qty:1});
+   cartDirty=true;renderCart();renderMenu();
+  };
+  card.addEventListener("click",e=>{
+   if(e.target.closest("[data-menu-minus],[data-menu-plus]"))return;
+   addOne();
+  });
+  card.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();addOne()}});
+ });
+
+ grid.querySelectorAll("[data-menu-minus]").forEach(btn=>btn.addEventListener("click",e=>{
+  e.stopPropagation();
+  const m=getMenu().find(x=>String(x.id)===String(btn.dataset.menuMinus));
+  if(!m)return;
+  const f=findCartItemForMenu(m);
+  if(f){f.qty--;if(f.qty<=0)cart.splice(cart.indexOf(f),1)}
+  cartDirty=true;renderCart();renderMenu();
+ }));
+ grid.querySelectorAll("[data-menu-plus]").forEach(btn=>btn.addEventListener("click",e=>{
+  e.stopPropagation();
+  const m=getMenu().find(x=>String(x.id)===String(btn.dataset.menuPlus));
+  if(!m)return;
+  const f=findCartItemForMenu(m);
+  if(f)f.qty++;else cart.push({...m,unit:m.unit||"phần",qty:1});
+  cartDirty=true;renderCart();renderMenu();
+ }));
+}
+
+function renderCart(){
+ const el=document.getElementById("cart");
+ const cartCount=cart.reduce((s,x)=>s+Number(x.qty||0),0);
+ const cartTitle=document.querySelector("#orderScreen>.card:nth-child(2) .section-title h2");
+ if(cartTitle)cartTitle.setAttribute("data-count",cartCount);
+ el.innerHTML=cart.length?cart.map((x,i)=>`
+  <div class="line">
+   <div>
+    <div class="foodname">${x.name}</div>
+    <div class="calc">${fmt(x.price)} × ${x.qty} ${x.unit||"phần"}</div>
+    <div class="qty-row">
+     <div class="qty">
+      <button type="button" data-minus="${i}">−</button><b>${x.qty}</b><button type="button" data-plus="${i}">+</button>
+     </div>
+     <div class="line-total">= ${fmt(x.price*x.qty)}</div>
+    </div>
+   </div>
+   <button class="del" type="button" data-del="${i}">Xóa</button>
+  </div>`).join(""):'<div class="empty">Chưa gọi món</div>';
+ el.querySelectorAll("[data-minus]").forEach(b=>b.addEventListener("click",()=>{let i=+b.dataset.minus;cart[i].qty--;if(cart[i].qty<=0)cart.splice(i,1);cartDirty=true;renderCart();renderMenu()}));
+ el.querySelectorAll("[data-plus]").forEach(b=>b.addEventListener("click",()=>{cart[+b.dataset.plus].qty++;cartDirty=true;renderCart();renderMenu()}));
+ el.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click",()=>{cart.splice(+b.dataset.del,1);cartDirty=true;renderCart();renderMenu()}));
+ document.getElementById("cartTotal").textContent=fmt(total(cart));
+}
+
+function openTable(seat){
+ current=seat; const open=getOpen();
+ cart=open[seat]?.items?open[seat].items.map(x=>({...x})):[];
+ currentOrderUpdatedAt=Number(open[seat]?.updatedAt||0);cartDirty=false;
+ document.getElementById("currentTable").textContent=seat;
+ document.getElementById("savedHint").classList.remove("conflict-note");document.getElementById("savedHint").textContent=cart.length?"Đơn đã lưu — có thể gọi thêm món":"Đơn mới";
+ document.getElementById("tableScreen").classList.add("hidden");
+ document.getElementById("orderScreen").classList.remove("hidden");
+ document.getElementById("mainTop").classList.add("hidden");
+ document.getElementById("orderTop").classList.remove("hidden");
+ renderCart();renderMenu();
+}
+function goTables(){
+ current=null;cart=[];currentOrderUpdatedAt=0;cartDirty=false;
+ document.getElementById("orderScreen").classList.add("hidden");
+ document.getElementById("tableScreen").classList.remove("hidden");
+ document.getElementById("orderTop").classList.add("hidden");
+ document.getElementById("mainTop").classList.remove("hidden");
+ renderTables();
+}
+async function saveCurrent(){
+ if(!current)return;
+ if(!cart.length){alert("Chưa có món để lưu.");return}
+ try{
+   if(cloudReady){
+     const snap=await db.ref("openOrders/"+current).once("value");
+     const remote=snap.val();
+     const remoteUpdated=Number(remote?.updatedAt||0);
+     if(remoteUpdated && currentOrderUpdatedAt && remoteUpdated>currentOrderUpdatedAt){
+       alert("Đơn này vừa được cập nhật trên thiết bị khác. App sẽ tải lại đơn mới nhất để tránh ghi đè.");
+       cart=(remote.items||[]).map(x=>({...x}));
+       currentOrderUpdatedAt=remoteUpdated;
+       renderCart();renderMenu();
+       return;
+     }
+   }
+   const stamp=Date.now();
+   const order={items:cart.map(x=>({...x})),updatedAt:stamp,updatedBy:currentFirebaseUser?.email||""};
+   if(cloudReady) await db.ref("openOrders/"+current).set(order);
+   else{const open=getOpen();open[current]=order;localPut("hau5k_open_orders_v4",open)}
+   currentOrderUpdatedAt=stamp;cartDirty=false;
+   document.getElementById("savedHint").classList.remove("conflict-note");document.getElementById("savedHint").textContent="Đã lưu lúc "+new Date(stamp).toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"});
+   renderTables();
+   alert("Đã lưu đơn "+current+" - "+fmt(total(cart)));
+ }catch(e){alert("Không lưu được đơn: "+e.message)}
+}
+
+let payMethod="cash";
+function openPayModal(){
+ if(!current||!cart.length){alert("Chưa có món để thanh toán.");return}
+ payMethod="cash";
+ document.querySelectorAll("[data-pay-method]").forEach(b=>b.classList.toggle("active",b.dataset.payMethod==="cash"));
+ document.getElementById("paySeat").textContent=current;
+ document.getElementById("payOriginalTotal").textContent=fmt(total(cart));
+ document.getElementById("payDiscount").value=0;
+ document.getElementById("payReceived").value="";
+ document.getElementById("payNote").value="";
+ document.getElementById("cashReceivedWrap").classList.remove("hidden");
+ updatePayCalc();
+ document.getElementById("payModal").classList.remove("hidden");
+}
+function updatePayCalc(){
+ const original=total(cart),discount=Math.max(0,Number(document.getElementById("payDiscount").value||0));
+ const finalTotal=Math.max(0,original-discount);
+ const received=Number(document.getElementById("payReceived").value||0);
+ document.getElementById("payFinalTotal").textContent=fmt(finalTotal);
+ document.getElementById("payChangeText").textContent=payMethod==="cash"?"Tiền thối: "+fmt(Math.max(0,received-finalTotal)):"Chuyển khoản: "+fmt(finalTotal);
+}
+async function payCurrent(){
+ if(!current||!cart.length)return;
+ const original=total(cart);
+ const discount=Math.min(original,Math.max(0,Number(document.getElementById("payDiscount").value||0)));
+ const amount=original-discount;
+ const received=payMethod==="cash"?Number(document.getElementById("payReceived").value||0):amount;
+ if(payMethod==="cash" && received<amount){alert("Tiền khách đưa chưa đủ.");return}
+ const now=new Date(),id=Date.now();
+ const record={id,day:dayKey(),seat:current,time:now.toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"}),items:cart.map(x=>({...x})),subtotal:original,discount,total:amount,paymentMethod:payMethod,received,change:Math.max(0,received-amount),paymentNote:document.getElementById("payNote").value.trim(),createdBy:currentFirebaseUser?.email||""};
+ try{
+   if(cloudReady){
+     const updates={};updates["paidOrders/"+id]=record;updates["openOrders/"+current]=null;
+     await db.ref().update(updates);
+   }else{
+     const paid=getPaid();paid.unshift(record);localPut("hau5k_paid_orders_v4",paid);
+     const open=getOpen();delete open[current];localPut("hau5k_open_orders_v4",open);
+   }
+   document.getElementById("payModal").classList.add("hidden");
+   alert("Đã thanh toán "+fmt(amount)+(discount?" • Giảm "+fmt(discount):""));
+   goTables();if(isOwner)refreshReport();
+ }catch(e){alert("Không thanh toán được: "+e.message)}
+}
+async function cancelCurrent(){
+ if(!current||!confirm("Hủy toàn bộ đơn của "+current+"?"))return;
+ try{
+   if(cloudReady)await db.ref("openOrders/"+current).remove();
+   else{const open=getOpen();delete open[current];localPut("hau5k_open_orders_v4",open)}
+   goTables();
+ }catch(e){alert("Không hủy được đơn: "+e.message)}
+}
+function addCustom(){
+ const name=prompt("Tên món:");if(!name)return;
+ const price=Number(prompt("Giá món:")||0);if(price<=0)return;
+ const f=cart.find(x=>x.name===name&&x.price===price);
+ if(f)f.qty++;else cart.push({id:"temp-"+Date.now(),name,price,unit:"phần",qty:1,cat:"khac"});
+ renderCart();renderMenu();
+}
+
+function saveExpense(){
+ const name=document.getElementById("exName").value.trim();
+ const amount=Number(document.getElementById("exAmount").value||0);
+ const note=document.getElementById("exNote").value.trim();
+ const category=document.getElementById("exCategory").value||"khac";
+ const qty=Number(document.getElementById("exQty").value||0);
+ const unit=document.getElementById("exUnit").value.trim();
+ if(!name||amount<=0){alert("Nhập tên nguyên vật liệu và số tiền.");return}
+ const now=new Date(),ex=getExpenses();
+ ex.unshift({id:Date.now(),day:dayKey(),time:now.toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"}),name,amount,note,category,qty,unit});
+ setExpenses(ex);
+ ["exName","exAmount","exNote","exQty","exUnit"].forEach(id=>document.getElementById(id).value="");
+ refreshExpenses();refreshReport();alert("Đã lưu "+name+" - "+fmt(amount));
+}
+function deleteExpense(id){if(confirm("Xóa khoản mua này?")){setExpenses(getExpenses().filter(x=>x.id!==id));refreshExpenses();refreshReport()}}
+function refreshExpenses(){
+ const allToday=getExpenses().filter(x=>x.day===dayKey());
+ const amount=allToday.reduce((s,x)=>s+Number(x.amount||0),0);
+ document.getElementById("expenseTotal").textContent=fmt(amount);
+ let ex=allToday;
+ if(expenseFilterCat!=="all")ex=ex.filter(x=>(x.category||"khac")===expenseFilterCat);
+ const el=document.getElementById("expenseList");
+ el.innerHTML=ex.length?ex.map(x=>`<div class="entry">
+   <div class="entryhead"><span>${x.name}</span><span>${fmt(x.amount)}</span></div>
+   <small>${nvlCatName(x.category||"khac")} • ${x.time}${x.qty?` • ${x.qty}${x.unit?" "+x.unit:""}`:""}${x.note?" • "+x.note:""}</small>
+   <div style="margin-top:8px"><button class="del" data-exdel="${x.id}">Xóa</button></div>
+ </div>`).join(""):'<div class="empty">Chưa có khoản mua phù hợp</div>';
+ el.querySelectorAll("[data-exdel]").forEach(b=>b.addEventListener("click",()=>deleteExpense(+b.dataset.exdel)));
+}
+function dateFromKey(key){
+ const [y,m,d]=key.split("-").map(Number);
+ return new Date(y,m-1,d);
+}
+function shortMoney(n){
+ n=Number(n||0);
+ if(n>=1000000)return (Math.round(n/100000)/10).toString().replace(".",",")+"tr";
+ if(n>=1000)return Math.round(n/1000)+"K";
+ return String(n);
+}
+function renderDailyChart(selectedDay){
+ const end=dateFromKey(selectedDay);
+ const paidAll=getPaid(), exAll=getExpenses();
+ const days=[];
+ for(let i=6;i>=0;i--){
+   const d=new Date(end);d.setDate(end.getDate()-i);
+   const key=dayKey(d);
+   const income=paidAll.filter(x=>x.day===key).reduce((s,x)=>s+Number(x.total||0),0);
+   const expense=exAll.filter(x=>x.day===key).reduce((s,x)=>s+Number(x.amount||0),0);
+   days.push({key,d,income,expense});
+ }
+ const max=Math.max(1,...days.flatMap(x=>[x.income,x.expense]));
+ document.getElementById("dailyChart").innerHTML=days.map(x=>{
+   const hi=Math.max(2,Math.round(x.income/max*155));
+   const he=Math.max(2,Math.round(x.expense/max*155));
+   const label=String(x.d.getDate()).padStart(2,"0")+"/"+String(x.d.getMonth()+1).padStart(2,"0");
+   const wd=["CN","T2","T3","T4","T5","T6","T7"][x.d.getDay()];
+   return `<div class="daycol ${x.key===selectedDay?"selected":""}">
+     <div class="bars">
+       <div class="barwrap"><div class="bar in" style="height:${hi}px">${x.income?`<span class="barval">${shortMoney(x.income)}</span>`:""}</div></div>
+       <div class="barwrap"><div class="bar out" style="height:${he}px">${x.expense?`<span class="barval">${shortMoney(x.expense)}</span>`:""}</div></div>
+     </div>
+     <div class="daylab">${label}<br>${wd}</div>
+   </div>`;
+ }).join("");
+}
+function refreshReport(){
+ const selectedDay=document.getElementById("reportDate")?.value||dayKey();
+ const selectedMonth=document.getElementById("reportMonth")?.value||selectedDay.slice(0,7);
+
+ const paid=getPaid().filter(x=>x.day===selectedDay);
+ const ex=getExpenses().filter(x=>x.day===selectedDay);
+ const revenue=paid.reduce((s,x)=>s+Number(x.total||0),0);
+ const cost=ex.reduce((s,x)=>s+Number(x.amount||0),0);
+
+ document.getElementById("paidCount").textContent=paid.length;
+ document.getElementById("revenue").textContent=fmt(revenue);
+ document.getElementById("cost").textContent=fmt(cost);
+ document.getElementById("net").textContent=fmt(revenue-cost);
+ const avg=paid.length?Math.round(revenue/paid.length):0;
+ document.getElementById("avgTicket").textContent=fmt(avg);
+ const cash=paid.filter(x=>(x.paymentMethod||"cash")==="cash").reduce((s,x)=>s+Number(x.total||0),0);
+ const transfer=paid.filter(x=>x.paymentMethod==="transfer").reduce((s,x)=>s+Number(x.total||0),0);
+ document.getElementById("cashRevenue").textContent=fmt(cash);
+ document.getElementById("transferRevenue").textContent=fmt(transfer);
+ const prev=new Date(selectedDay+"T12:00:00");prev.setDate(prev.getDate()-1);
+ const prevKey=dayKey(prev);
+ const prevRevenue=getPaid().filter(x=>x.day===prevKey).reduce((s,x)=>s+Number(x.total||0),0);
+ const delta=prevRevenue?Math.round((revenue-prevRevenue)/prevRevenue*100):null;
+ document.getElementById("vsYesterday").textContent=delta===null?(revenue?"Ngày trước: 0đ":"—"):(delta>0?"+":"")+delta+"%";
+ const tops=aggregateSoldItems(paid).slice(0,3);
+ document.getElementById("topDishes").innerHTML=tops.length?tops.map((x,i)=>`<div class="top-dish-row"><span>${i+1}. ${x.name}</span><b>${x.qty} ${x.unit||"phần"}</b></div>`).join(""):"Chưa có dữ liệu";
+
+ const [yy,mm,dd]=selectedDay.split("-");
+ document.getElementById("reportDayTitle").textContent=`Tổng kết ${dd}/${mm}/${yy}`;
+ document.getElementById("paidListTitle").textContent=`Chi tiết ngày ${dd}/${mm}/${yy}`;
+
+ document.getElementById("paidList").innerHTML=paid.length?paid.map((o,i)=>`
+   <div class="paid-row">
+     <div class="paid-main"><span>${i+1}. ${o.seat}</span><span>${fmt(o.total)}</span></div>
+     <div class="paid-sub">${o.time} • ${(o.paymentMethod==="transfer"?"Chuyển khoản":"Tiền mặt")}${Number(o.discount||0)>0?" • Giảm "+fmt(o.discount):""} • ${o.items.map(x=>`${x.name} ×${x.qty}`).join(", ")}</div>
+   </div>`).join(""):'<div class="empty">Không có đơn đã thanh toán trong ngày này</div>';
+
+ const monthPaid=getPaid().filter(x=>typeof x.day==="string"&&x.day.startsWith(selectedMonth));
+ const monthEx=getExpenses().filter(x=>typeof x.day==="string"&&x.day.startsWith(selectedMonth));
+ const monthRevenue=monthPaid.reduce((s,x)=>s+Number(x.total||0),0);
+ const monthCost=monthEx.reduce((s,x)=>s+Number(x.amount||0),0);
+
+ document.getElementById("monthOrders").textContent=monthPaid.length;
+ document.getElementById("monthRevenue").textContent=fmt(monthRevenue);
+ document.getElementById("monthCost").textContent=fmt(monthCost);
+ document.getElementById("monthNet").textContent=fmt(monthRevenue-monthCost);
+
+ const [my,mmm]=selectedMonth.split("-");
+ document.getElementById("monthTitle").textContent=`Tổng kết tháng ${mmm}/${my}`;
+ renderDailyChart(selectedDay);
+ renderSoldItems(selectedDay,selectedMonth);
+}
+
+
+function aggregateSoldItems(orders){
+ const map=new Map();
+ orders.forEach(o=>(o.items||[]).forEach(it=>{
+   const key=String(it.id||"")+"|"+it.name+"|"+Number(it.price||0);
+   if(!map.has(key))map.set(key,{name:it.name,qty:0,unit:it.unit||"phần",revenue:0});
+   const x=map.get(key);
+   x.qty+=Number(it.qty||0);
+   x.revenue+=Number(it.qty||0)*Number(it.price||0);
+ }));
+ return [...map.values()].sort((a,b)=>b.qty-a.qty||b.revenue-a.revenue);
+}
+function renderSoldItems(selectedDay,selectedMonth){
+ const orders=soldPeriod==="month"
+   ? getPaid().filter(x=>typeof x.day==="string"&&x.day.startsWith(selectedMonth))
+   : getPaid().filter(x=>x.day===selectedDay);
+ const items=aggregateSoldItems(orders);
+ const el=document.getElementById("soldItemsList");
+ document.getElementById("soldItemCount").textContent=items.length+" món";
+ if(soldPeriod==="month"){
+   const [y,m]=selectedMonth.split("-");
+   document.getElementById("soldItemsTitle").textContent=`Tháng ${m}/${y}`;
+ }else{
+   const [y,m,d]=selectedDay.split("-");
+   document.getElementById("soldItemsTitle").textContent=`Ngày ${d}/${m}/${y}`;
+ }
+ el.innerHTML=items.length?items.map(x=>`<div class="sales-item">
+   <div><div class="sales-item-name">${x.name}</div><div class="sales-item-sub">Doanh thu ${fmt(x.revenue)}</div></div>
+   <div class="sales-item-qty">${x.qty} ${x.unit||"phần"}</div>
+ </div>`).join(""):'<div class="empty">Chưa bán món nào trong khoảng này</div>';
+}
+
+function catName(cat){const c=getCategories().find(x=>x.id===cat);return c?c.name:"Món khác"}
+function resetMenuForm(){document.getElementById("mId").value="";document.getElementById("mName").value="";document.getElementById("mPrice").value="";document.getElementById("mUnit").value="phần";renderCategoryControls();document.getElementById("mCat").value="khac";document.getElementById("saveMenuItem").textContent="Lưu món"}
+function saveMenuItem(){
+ const id=document.getElementById("mId").value;
+ const name=document.getElementById("mName").value.trim();
+ const price=Number(document.getElementById("mPrice").value||0);
+ const unit=(document.getElementById("mUnit").value.trim()||"phần");
+ const cat=document.getElementById("mCat").value;
+ if(!name||price<=0){alert("Nhập tên món và giá bán.");return}
+ const m=getMenu();
+ if(id){
+  const i=m.findIndex(x=>String(x.id)===id);
+  if(i>=0)m[i]={...m[i],name,price,unit,cat};
+ }else{
+  m.push({id:Date.now(),name,price,unit,cat});
+ }
+ setMenu(m);resetMenuForm();renderManageList();renderMenu();alert("Đã lưu món.");
+}
+function editMenuItem(id){
+ const x=getMenu().find(m=>String(m.id)===String(id));if(!x)return;
+ document.getElementById("mId").value=x.id;document.getElementById("mName").value=x.name;document.getElementById("mPrice").value=x.price;document.getElementById("mUnit").value=x.unit||"phần";renderCategoryControls();document.getElementById("mCat").value=x.cat||"khac";document.getElementById("saveMenuItem").textContent="Cập nhật món";
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+function deleteMenuItem(id){
+ const x=getMenu().find(m=>String(m.id)===String(id));if(!x)return;
+ if(!confirm("Xóa món "+x.name+" khỏi menu?"))return;
+ setMenu(getMenu().filter(m=>String(m.id)!==String(id)));renderManageList();renderMenu();
+}
+function renderManageList(){
+ const m=getMenu();document.getElementById("menuCount").textContent=m.length+" món";
+ const el=document.getElementById("manageList");
+ el.innerHTML=m.length?m.map(x=>`<div class="entry">
+  <div class="entryhead"><span>${x.name}</span><span>${fmt(x.price)}</span></div>
+  <small>${catName(x.cat)} • Đơn vị: ${x.unit||"phần"}</small>
+  <div class="manage-actions"><button class="smallbtn editbtn" data-edit="${x.id}">Sửa</button><button class="smallbtn danger" data-md="${x.id}">Xóa</button></div>
+ </div>`).join(""):'<div class="empty">Chưa có món</div>';
+ el.querySelectorAll("[data-edit]").forEach(b=>b.addEventListener("click",()=>editMenuItem(b.dataset.edit)));
+ el.querySelectorAll("[data-md]").forEach(b=>b.addEventListener("click",()=>deleteMenuItem(b.dataset.md)));
+}
+
+
+function csvCell(v){const s=String(v??"").replace(/"/g,'""');return `"${s}"`}
+function downloadText(filename,content,type="text/plain;charset=utf-8"){
+ const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),500);
+}
+function exportSalesCSV(){
+ const rows=[["Ngày","Giờ","Bàn/Kênh","Tổng trước giảm","Giảm giá","Thực thu","Thanh toán","Người thao tác","Món"]];
+ getPaid().slice().sort((a,b)=>String(a.day).localeCompare(String(b.day))||Number(a.id)-Number(b.id)).forEach(o=>{
+   rows.push([o.day,o.time,o.seat,o.subtotal??o.total,o.discount||0,o.total,o.paymentMethod==="transfer"?"Chuyển khoản":"Tiền mặt",o.createdBy||"", (o.items||[]).map(x=>`${x.name} x${x.qty}`).join(" | ")]);
+ });
+ downloadText(`hau5k_ban_hang_${dayKey()}.csv`,"\ufeff"+rows.map(r=>r.map(csvCell).join(",")).join("\r\n"),"text/csv;charset=utf-8");
+}
+function exportExpenseCSV(){
+ const rows=[["Ngày","Danh mục","Tên NVL","Số lượng","Đơn vị","Số tiền","Ghi chú"]];
+ getExpenses().slice().sort((a,b)=>String(a.day).localeCompare(String(b.day))).forEach(x=>{
+   const cat=getNvlCategories().find(c=>c.id===(x.category||"khac"));
+   rows.push([x.day,cat?.name||x.category||"Khác",x.name||"",x.qty||"",x.unit||"",x.amount||0,x.note||""]);
+ });
+ downloadText(`hau5k_chi_nvl_${dayKey()}.csv`,"\ufeff"+rows.map(r=>r.map(csvCell).join(",")).join("\r\n"),"text/csv;charset=utf-8");
+}
+function backupAllJSON(){
+ const data={version:"13.5",createdAt:new Date().toISOString(),menu:getMenu(),categories:getCategories(),nvlCategories:getNvlCategories(),openOrders:getOpen(),paidOrders:getPaid(),expenses:getExpenses(),familyExpenses:familyData,familyBudgets,familyIncome:familyIncomeData};
+ downloadText(`hau5k_backup_${dayKey()}.json`,JSON.stringify(data,null,2),"application/json;charset=utf-8");
+}
+
+function showTab(name){
+ if(!isOwner && name!=="sales")name="sales";
+ document.getElementById("salesView").classList.toggle("hidden",name!=="sales");
+ document.getElementById("expenseView").classList.toggle("hidden",name!=="expense");
+ document.getElementById("reportView").classList.toggle("hidden",name!=="report");
+ document.getElementById("menuManageView").classList.toggle("hidden",name!=="menuManage");
+ document.getElementById("familyView").classList.toggle("hidden",name!=="family");
+ document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));
+ document.getElementById("mainTop").classList.remove("hidden");
+ document.getElementById("orderTop").classList.add("hidden");
+ if(name==="sales"){document.getElementById("orderScreen").classList.add("hidden");document.getElementById("tableScreen").classList.remove("hidden");renderTables()}
+ if(name==="expense"){renderNvlCategories();refreshExpenses()}
+ if(name==="report")refreshReport();
+ if(name==="menuManage")renderManageList();
+ if(name==="family")renderFamily();
+}
+
+document.getElementById("today").textContent=new Date().toLocaleDateString("vi-VN",{weekday:"long",day:"2-digit",month:"2-digit",year:"numeric"});
+document.getElementById("backBtn").addEventListener("click",goTables);
+document.getElementById("returnBtn").addEventListener("click",goTables);
+document.getElementById("saveBtn").addEventListener("click",saveCurrent);
+document.getElementById("payBtn").addEventListener("click",openPayModal);
+document.getElementById("closePayModal").addEventListener("click",()=>document.getElementById("payModal").classList.add("hidden"));
+document.getElementById("confirmPayBtn").addEventListener("click",payCurrent);
+document.getElementById("payDiscount").addEventListener("input",updatePayCalc);
+document.getElementById("payReceived").addEventListener("input",updatePayCalc);
+document.querySelectorAll("[data-pay-method]").forEach(b=>b.addEventListener("click",()=>{
+ payMethod=b.dataset.payMethod;
+ document.querySelectorAll("[data-pay-method]").forEach(x=>x.classList.toggle("active",x===b));
+ document.getElementById("cashReceivedWrap").classList.toggle("hidden",payMethod!=="cash");
+ updatePayCalc();
+}));
+document.getElementById("cancelBtn").addEventListener("click",cancelCurrent);
+document.getElementById("customBtn").addEventListener("click",addCustom);
+document.getElementById("menuSearch").addEventListener("input",e=>{menuSearchText=e.target.value;renderMenu()});
+document.getElementById("saveExpense").addEventListener("click",saveExpense);
+document.getElementById("addNvlCategory").addEventListener("click",addNvlCategory);
+document.getElementById("newNvlCatName").addEventListener("keydown",e=>{if(e.key==="Enter")addNvlCategory()});
+document.getElementById("soldByDay").addEventListener("click",()=>{
+ soldPeriod="day";
+ document.getElementById("soldByDay").classList.add("active");
+ document.getElementById("soldByMonth").classList.remove("active");
+ refreshReport();
+});
+document.getElementById("soldByMonth").addEventListener("click",()=>{
+ soldPeriod="month";
+ document.getElementById("soldByMonth").classList.add("active");
+ document.getElementById("soldByDay").classList.remove("active");
+ refreshReport();
+});
+document.getElementById("saveMenuItem").addEventListener("click",saveMenuItem);
+document.getElementById("cancelEdit").addEventListener("click",resetMenuForm);
+document.getElementById("addCategory").addEventListener("click",addCategory);
+document.getElementById("newCatName").addEventListener("keydown",e=>{if(e.key==="Enter")addCategory()});
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
+document.getElementById("exportSalesCsv").addEventListener("click",exportSalesCSV);
+document.getElementById("exportExpenseCsv").addEventListener("click",exportExpenseCSV);
+document.getElementById("backupJson").addEventListener("click",backupAllJSON);
+
+
+async function seedCloudIfEmpty(){
+ const menuSnap=await db.ref("menu").once("value");
+ if(!menuSnap.exists()){
+   await db.ref("menu").set(getMenu());
+   await db.ref("categories").set(getCategories());
+   await db.ref("nvlCategories").set(getNvlCategories());
+
+   const open=getOpen();
+   if(open && Object.keys(open).length) await db.ref("openOrders").set(open);
+
+   const paid=getPaid();
+   if(Array.isArray(paid) && paid.length){
+     const updates={};
+     paid.forEach(x=>{ if(x && x.id!=null) updates["paidOrders/"+String(x.id)]=x; });
+     if(Object.keys(updates).length) await db.ref().update(updates);
+   }
+
+   const expenses=getExpenses();
+   if(Array.isArray(expenses) && expenses.length) await db.ref("expenses").set(expenses);
+ }
+}
+
+function applyRoleUI(){
+ document.getElementById("userBar").classList.remove("hidden");
+ document.getElementById("userEmail").textContent=currentFirebaseUser?.email||"";
+ setSyncState(false,(isOwner?"Chủ quán":"Nhân viên")+" • đang đồng bộ");
+ document.getElementById("staffNote").classList.toggle("hidden",isOwner);
+ document.querySelectorAll('.tab[data-tab="expense"],.tab[data-tab="menuManage"],.tab[data-tab="report"],.tab[data-tab="family"]').forEach(b=>b.classList.toggle("hidden",!isOwner));
+ const tabs=document.querySelector(".tabinner");
+ if(tabs) tabs.style.gridTemplateColumns=isOwner?"repeat(5,1fr)":"1fr";
+}
+
+async function startCloudSync(){
+ clearCloudListeners();
+ cloudReady=false;
+ setSyncState(false,(isOwner?"Chủ quán":"Nhân viên")+" • đang đồng bộ");
+
+ if(isOwner)await seedCloudIfEmpty();
+
+ cloudReady=true;
+ let pending=isOwner?6:4;
+ const readyOne=()=>{
+   pending--;
+   if(pending<=0){
+     setSyncState(true,(isOwner?"Chủ quán":"Nhân viên")+" • đã đồng bộ");
+   }
+ };
+
+ listenRef("menu",v=>{if(v){localPut("hau5k_menu_v5",normalizeCollection(v));renderMenu();if(isOwner)renderManageList()}},readyOne);
+ listenRef("categories",v=>{if(v){localPut("hau5k_categories_v9",normalizeCollection(v));renderCategoryControls();if(isOwner)renderManageList()}},readyOne);
+ listenRef("nvlCategories",v=>{if(v){localPut("hau5k_nvl_categories_v10",normalizeCollection(v));if(isOwner)renderNvlCategories()}},readyOne);
+ listenRef("openOrders",v=>{
+   localPut("hau5k_open_orders_v4",v||{});
+   renderTables();
+   if(current && v && v[current] && document.getElementById("orderScreen") && !document.getElementById("orderScreen").classList.contains("hidden")){
+     const remoteUpdated=Number(v[current].updatedAt||0);
+     if(cartDirty && remoteUpdated>currentOrderUpdatedAt){
+       const hint=document.getElementById("savedHint");
+       hint.textContent="⚠️ Bàn vừa đổi trên thiết bị khác — bấm Lưu để kiểm tra";
+       hint.classList.add("conflict-note");
+     }else if(!cartDirty){
+       cart=(v[current].items||[]).map(x=>({...x}));
+       currentOrderUpdatedAt=remoteUpdated;
+       document.getElementById("savedHint").classList.remove("conflict-note");
+       renderCart();renderMenu();
+     }
+   }
+ },readyOne);
+
+ if(isOwner){
+   listenRef("paidOrders",v=>{localPut("hau5k_paid_orders_v4",normalizeCollection(v));refreshReport()},readyOne);
+   listenRef("expenses",v=>{localPut("hau5k_expenses_v4",normalizeCollection(v));refreshExpenses();refreshReport()},readyOne);
+ }else{
+   localPut("hau5k_paid_orders_v4",[]);
+   localPut("hau5k_expenses_v4",[]);
+ }
+
+ showTab("sales");
+ renderMenu();renderTables();
+}
+
+async function doLogin(){
+ const email=document.getElementById("loginEmail").value.trim();
+ const password=document.getElementById("loginPassword").value;
+ const msg=document.getElementById("authMsg");
+ if(!email||!password){msg.textContent="Nhập email và mật khẩu.";return}
+ msg.textContent="Đang đăng nhập...";
+ try{
+   await auth.signInWithEmailAndPassword(email,password);
+   msg.textContent="";
+ }catch(e){
+   const code=e && e.code ? e.code : "unknown";
+   msg.textContent="Đăng nhập không thành công ("+code+").";
+   console.error("Firebase login:",e);
+ }
+}
+
+
+async function sendResetPassword(){
+ const email=document.getElementById("loginEmail").value.trim();
+ const msg=document.getElementById("authMsg");
+ if(!email){msg.textContent="Nhập email trước rồi bấm Quên mật khẩu.";return}
+ msg.style.color="#667085";
+ msg.textContent="Đang yêu cầu gửi email đặt lại mật khẩu...";
+ try{
+   await auth.sendPasswordResetEmail(email);
+   msg.style.color="#14833b";
+   msg.textContent="Đã yêu cầu gửi email. Kiểm tra Hộp thư đến và Thư rác.";
+ }catch(e){
+   msg.style.color="#d92d20";
+   const code=e && e.code ? e.code : "unknown";
+   msg.textContent="Không gửi được ("+code+").";
+   console.error("Firebase reset password:",e);
+ }
+}
+document.getElementById("forgotBtn").addEventListener("click",sendResetPassword);
+
+document.getElementById("loginBtn").addEventListener("click",doLogin);
+document.getElementById("loginPassword").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()});
+document.getElementById("logoutBtn").addEventListener("click",()=>auth.signOut());
+
+auth.onAuthStateChanged(async user=>{
+ if(!user){
+   currentFirebaseUser=null;isOwner=false;cloudReady=false;clearCloudListeners();
+   document.getElementById("authScreen").classList.remove("hidden");
+   document.getElementById("userBar").classList.add("hidden");
+   return;
+ }
+ currentFirebaseUser=user;
+ isOwner=user.uid===OWNER_UID;
+ document.getElementById("authScreen").classList.add("hidden");
+ try{
+   applyRoleUI();
+   await startCloudSync();
+ }catch(e){
+   console.error(e);
+   setSyncState(false,(isOwner?"Chủ quán":"Nhân viên")+" • lỗi đồng bộ");
+   alert("Đăng nhập được nhưng Firebase đang chặn quyền đồng bộ. Mã lỗi: "+(e.code||e.message));
+ }
+});
+
+
+const todayKey=dayKey();
+const monthKey=todayKey.slice(0,7);
+document.getElementById("reportDate").value=todayKey;
+document.getElementById("reportMonth").value=monthKey;
+document.getElementById("reportDate").addEventListener("change",()=>{
+ document.getElementById("reportMonth").value=document.getElementById("reportDate").value.slice(0,7);
+ refreshReport();
+});
+document.getElementById("reportMonth").addEventListener("change",refreshReport);
+document.getElementById("jumpMonth").addEventListener("click",()=>{
+ document.getElementById("monthSummaryBox").scrollIntoView({behavior:"smooth",block:"start"});
+});
+
+getCategories();renderCategoryControls();getNvlCategories();renderNvlCategories();getMenu();renderMenu();renderTables();refreshExpenses();refreshReport();renderCart();renderManageList();
+
+const familyRef=()=>db.ref("familyExpenses");
+const familyBudgetRef=()=>db.ref("familyBudgets");
+const FAMILY_LOCAL_KEY="hau5k_family_expenses_v1";
+const FAMILY_BUDGET_LOCAL_KEY="hau5k_family_budgets_v1";
+const FAMILY_INCOME_LOCAL_KEY="hau5k_family_income_v1";
+const familyIncomeRef=()=>db.ref("familyIncome");
+let familyData=read(FAMILY_LOCAL_KEY,{})||{},familyBudgets=read(FAMILY_BUDGET_LOCAL_KEY,{})||{},familyIncomeData=read(FAMILY_INCOME_LOCAL_KEY,{})||{};
+const fd=document.getElementById("familyDate"), fm=document.getElementById("familyMonth");
+fd.value=dayKey(); fm.value=new Date().toISOString().slice(0,7);
+const fid=document.getElementById("familyIncomeDate");fid.value=dayKey();
+let familyReportMode="day";
+const frd=document.getElementById("familyReportDay"),frm=document.getElementById("familyReportMonth");
+frd.value=dayKey();frm.value=new Date().toISOString().slice(0,7);
+
+function saveFamilyLocal(){
+ localPut(FAMILY_LOCAL_KEY,familyData);
+ localPut(FAMILY_BUDGET_LOCAL_KEY,familyBudgets);
+ localPut(FAMILY_INCOME_LOCAL_KEY,familyIncomeData);
+}
+
+function familyPeriodData(mode,key){
+ const expenses=Object.values(familyData).filter(x=>mode==="day"?x.date===key:(x.date||"").slice(0,7)===key);
+ const incomes=Object.values(familyIncomeData).filter(x=>mode==="day"?x.date===key:(x.date||"").slice(0,7)===key);
+ return {expenses,incomes};
+}
+function renderFamilyReport(){
+ const key=familyReportMode==="day"?frd.value:frm.value;
+ const {expenses,incomes}=familyPeriodData(familyReportMode,key);
+ const exp=expenses.reduce((s,x)=>s+Number(x.amount||0),0);
+ const inc=incomes.reduce((s,x)=>s+Number(x.amount||0),0);
+ const net=inc-exp,count=expenses.length+incomes.length;
+ document.getElementById("familyReportTitle").textContent=familyReportMode==="day"
+   ?"Tổng kết "+(key?key.split("-").reverse().join("/"):"")
+   :"Tổng kết tháng "+key;
+ document.getElementById("familyKpiIncome").textContent=fmt(inc);
+ document.getElementById("familyKpiExpense").textContent=fmt(exp);
+ document.getElementById("familyKpiNet").textContent=fmt(net);
+ document.getElementById("familyKpiNet").className=net>=0?"family-net-positive":"family-net-negative";
+ document.getElementById("familyKpiCount").textContent=count;
+ document.getElementById("familyAvgExpense").textContent=fmt(expenses.length?Math.round(exp/expenses.length):0);
+ const byExp={};expenses.forEach(x=>byExp[x.category||"Khác"]=(byExp[x.category||"Khác"]||0)+Number(x.amount||0));
+ const byInc={};incomes.forEach(x=>byInc[x.category||"Khác"]=(byInc[x.category||"Khác"]||0)+Number(x.amount||0));
+ const topE=Object.entries(byExp).sort((a,b)=>b[1]-a[1])[0];
+ const topI=Object.entries(byInc).sort((a,b)=>b[1]-a[1])[0];
+ document.getElementById("familyTopExpenseCat").textContent=topE?`${topE[0]} • ${fmt(topE[1])}`:"—";
+ document.getElementById("familyTopIncomeCat").textContent=topI?`${topI[0]} • ${fmt(topI[1])}`:"—";
+ let prevKey;
+ if(familyReportMode==="day"){
+   const d=new Date(key+"T12:00:00");d.setDate(d.getDate()-1);prevKey=dayKey(d);
+ }else{
+   const [y,m]=key.split("-").map(Number);const d=new Date(y,m-2,1);prevKey=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");
+ }
+ const prev=familyPeriodData(familyReportMode,prevKey);
+ const prevExp=prev.expenses.reduce((s,x)=>s+Number(x.amount||0),0);
+ const diff=prevExp?Math.round((exp-prevExp)/prevExp*100):null;
+ document.getElementById("familyVsPrevious").textContent=diff===null?(exp?"Kỳ trước: 0đ":"—"):(diff>0?"+":"")+diff+"% chi";
+}
+function renderFamily(){
+ renderFamilyReport();
+ const month=fm.value;
+ const rows=Object.entries(familyData).map(([id,x])=>({...x,id}))
+  .filter(x=>(x.date||"").slice(0,7)===month)
+  .sort((a,b)=>(b.date||"").localeCompare(a.date||"")||Number(b.id)-Number(a.id));
+ const sum=rows.reduce((s,x)=>s+Number(x.amount||0),0);
+ const incomeRows=Object.entries(familyIncomeData).map(([id,x])=>({...x,id}))
+   .filter(x=>(x.date||"").slice(0,7)===month)
+   .sort((a,b)=>(b.date||"").localeCompare(a.date||"")||Number(b.id)-Number(a.id));
+ const incomeSum=incomeRows.reduce((s,x)=>s+Number(x.amount||0),0);
+ const net=incomeSum-sum;
+ document.getElementById("familyTotal").textContent=fmt(sum);
+ document.getElementById("familyIncomeTotal").textContent=fmt(incomeSum);
+ document.getElementById("familyNet").textContent=fmt(net);
+ document.getElementById("familyBalance").textContent="Còn lại: "+fmt(net);
+ document.getElementById("familyNet").className=net>=0?"family-net-positive":"family-net-negative";
+ document.getElementById("familyBalance").className=net>=0?"family-net-positive":"family-net-negative";
+ const budget=Number(familyBudgets[month]||0);
+ const pct=budget?Math.min(100,Math.round(sum/budget*100)):0;
+ document.getElementById("familyBudget").value=budget||"";
+ document.getElementById("familyBudgetFill").style.width=pct+"%";
+ document.getElementById("familyBudgetText").textContent=budget?`Đã chi ${fmt(sum)} / ${fmt(budget)} • ${pct}% ngân sách`:"Chưa đặt ngân sách cho tháng này";
+ const byCat={};rows.forEach(x=>byCat[x.category||"Khác"]=(byCat[x.category||"Khác"]||0)+Number(x.amount||0));
+ document.getElementById("familyCategorySummary").innerHTML=Object.entries(byCat).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="family-mini"><span>${k}</span><b>${fmt(v)}</b></div>`).join("");
+ document.getElementById("familyIncomeList").innerHTML=incomeRows.length?incomeRows.map(x=>`
+ <div class="line" style="display:flex;justify-content:space-between;gap:8px;align-items:center;border-bottom:1px solid var(--border);padding:9px 0">
+  <div><b>${x.category||"Khác"}</b><div class="muted">${x.date||""}${x.note?" • "+x.note:""}</div></div>
+  <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end"><strong class="family-net-positive">+${fmt(Number(x.amount||0))}</strong><button class="secondary" data-fiedit="${x.id}" style="padding:7px 9px">Sửa</button><button class="del" data-fidel="${x.id}">Xóa</button></div>
+ </div>`).join(""):'<div class="muted">Chưa có khoản thu ngoài trong tháng này</div>';
+ document.querySelectorAll("[data-fiedit]").forEach(b=>b.onclick=async()=>{
+   if(!isOwner)return;
+   const id=b.dataset.fiedit,x=familyIncomeData[id];if(!x)return;
+   const date=prompt("Ngày (YYYY-MM-DD):",x.date||dayKey());if(date===null)return;
+   const category=prompt("Nguồn thu:",x.category||"Khác");if(category===null)return;
+   const amountText=prompt("Số tiền:",Number(x.amount||0));if(amountText===null)return;
+   const amount=Number(String(amountText).replace(/[^0-9.-]/g,""));if(!(amount>0))return alert("Số tiền không hợp lệ.");
+   const note=prompt("Ghi chú:",x.note||"");if(note===null)return;
+   const updated={...x,date:date.trim()||x.date,category:category.trim()||"Khác",amount,note:note.trim(),editedAt:Date.now(),editedBy:currentFirebaseUser?.email||""};
+   familyIncomeData[id]=updated;saveFamilyLocal();renderFamily();
+   if(cloudReady){try{await familyIncomeRef().child(id).set(updated)}catch(e){console.warn("Family income cloud edit:",e.message)}}
+ });
+ document.querySelectorAll("[data-fidel]").forEach(b=>b.onclick=async()=>{
+   if(!isOwner)return;
+   if(!confirm("Xóa khoản thu này?"))return;
+   const id=b.dataset.fidel;delete familyIncomeData[id];saveFamilyLocal();renderFamily();
+   if(cloudReady){try{await familyIncomeRef().child(id).remove()}catch(e){console.warn("Family income cloud delete:",e.message)}}
+ });
+ document.getElementById("familyList").innerHTML=rows.length?rows.map(x=>`
+ <div class="line" style="display:flex;justify-content:space-between;gap:8px;align-items:center;border-bottom:1px solid var(--border);padding:9px 0">
+  <div><b>${x.category||"Khác"}</b><div class="muted">${x.date||""}${x.note?" • "+x.note:""}</div></div>
+  <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end"><strong>${fmt(Number(x.amount||0))}</strong><button class="secondary" data-fedit="${x.id}" style="padding:7px 9px">Sửa</button><button class="del" data-fdel="${x.id}">Xóa</button></div>
+ </div>`).join(""):'<div class="muted">Chưa có khoản chi trong tháng này</div>';
+ document.querySelectorAll("[data-fedit]").forEach(b=>b.onclick=async()=>{
+   if(!isOwner)return;
+   const id=b.dataset.fedit,x=familyData[id];if(!x)return;
+   const date=prompt("Ngày (YYYY-MM-DD):",x.date||dayKey());if(date===null)return;
+   const category=prompt("Nhóm chi:",x.category||"Khác");if(category===null)return;
+   const amountText=prompt("Số tiền:",Number(x.amount||0));if(amountText===null)return;
+   const amount=Number(String(amountText).replace(/[^0-9.-]/g,""));if(!(amount>0))return alert("Số tiền không hợp lệ.");
+   const note=prompt("Ghi chú:",x.note||"");if(note===null)return;
+   const updated={...x,date:date.trim()||x.date,category:category.trim()||"Khác",amount,note:note.trim(),editedAt:Date.now(),editedBy:currentFirebaseUser?.email||""};
+   familyData[id]=updated;saveFamilyLocal();renderFamily();
+   if(cloudReady){try{await familyRef().child(id).set(updated)}catch(e){console.warn("Family cloud edit:",e.message)}}
+ });
+ document.querySelectorAll("[data-fdel]").forEach(b=>b.onclick=async()=>{
+   if(!isOwner)return;
+   if(!confirm("Xóa khoản chi này?"))return;
+   const id=b.dataset.fdel;
+   delete familyData[id];saveFamilyLocal();renderFamily();
+   if(cloudReady){try{await familyRef().child(id).remove()}catch(e){console.warn("Family cloud delete:",e.message)}}
+ });
+}
+
+document.getElementById("addFamily").onclick=async()=>{
+ if(!isOwner)return alert("Chỉ chủ quán được dùng mục Sinh hoạt.");
+ const amount=Number(document.getElementById("familyAmount").value||0);
+ if(amount<=0)return alert("Nhập số tiền hợp lệ.");
+ const id=Date.now().toString();
+ const row={date:fd.value||dayKey(),category:document.getElementById("familyCat").value,amount,note:document.getElementById("familyNote").value.trim()};
+ // Lưu trên máy trước để nút luôn hoạt động, kể cả Firebase chưa cấp quyền cho đường dẫn mới.
+ familyData[id]=row;saveFamilyLocal();renderFamily();
+ document.getElementById("familyAmount").value="";document.getElementById("familyNote").value="";
+ if(cloudReady){
+   try{await familyRef().child(id).set(row)}
+   catch(e){console.warn("Family cloud save:",e.message)}
+ }
+};
+
+
+document.getElementById("addFamilyIncome").onclick=async()=>{
+ if(!isOwner)return alert("Chỉ chủ quán được dùng mục Sinh hoạt.");
+ const amount=Number(document.getElementById("familyIncomeAmount").value||0);
+ if(amount<=0)return alert("Nhập số tiền thu hợp lệ.");
+ const id=Date.now().toString();
+ const row={date:fid.value||dayKey(),category:document.getElementById("familyIncomeCat").value,amount,note:document.getElementById("familyIncomeNote").value.trim()};
+ familyIncomeData[id]=row;saveFamilyLocal();renderFamily();
+ document.getElementById("familyIncomeAmount").value="";
+ document.getElementById("familyIncomeNote").value="";
+ if(cloudReady){try{await familyIncomeRef().child(id).set(row)}catch(e){console.warn("Family income cloud save:",e.message)}}
+};
+
+
+document.querySelectorAll("[data-family-mode]").forEach(b=>b.onclick=()=>{
+ familyReportMode=b.dataset.familyMode;
+ document.querySelectorAll("[data-family-mode]").forEach(x=>x.classList.toggle("active",x===b));
+ frd.parentElement.style.display=familyReportMode==="day"?"":"none";
+ frm.parentElement.style.display=familyReportMode==="month"?"":"none";
+ renderFamilyReport();
+});
+frd.onchange=renderFamilyReport;
+frm.onchange=renderFamilyReport;
+frm.parentElement.style.display="none";
+
+fm.onchange=renderFamily;
+document.getElementById("saveFamilyBudget").onclick=async()=>{
+ if(!isOwner)return;
+ const amount=Math.max(0,Number(document.getElementById("familyBudget").value||0));
+ familyBudgets[fm.value]=amount;saveFamilyLocal();renderFamily();
+ if(cloudReady){try{await familyBudgetRef().child(fm.value).set(amount)}catch(e){console.warn("Family budget cloud:",e.message)}}
+};
+
+// Đồng bộ cloud nếu Firebase Rules cho phép; nếu chưa cho phép thì vẫn dùng dữ liệu local bình thường.
+familyRef().on("value",s=>{
+ if(!isOwner)return;
+ const cloud=s.val()||{};
+ familyData={...familyData,...cloud};saveFamilyLocal();renderFamily();
+},e=>{console.warn("Family cloud read:",e.message);renderFamily()});
+
+familyBudgetRef().on("value",s=>{
+ if(!isOwner)return;
+ familyBudgets={...familyBudgets,...(s.val()||{})};saveFamilyLocal();renderFamily();
+},e=>{console.warn("Family budget read:",e.message);renderFamily()});
+
+renderFamily();
+
+</script>
+</body>
+</html>
