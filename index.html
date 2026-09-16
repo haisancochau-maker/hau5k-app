@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Hàu 5K V14.1A - Android ổn định</title>
+<title>Hàu 5K V14.2A - Android K58 an toàn</title>
 <style>
 :root{
   --bg:#f5f8fc;--card:#fff;--text:#182230;--muted:#667085;--line:#dfe6ef;
@@ -408,7 +408,7 @@ button,input,select{touch-action:manipulation}
   <div id="staffNote" class="staff-note hidden">👤 Chế độ nhân viên: chỉ sử dụng phần Bán hàng.</div>
   <div id="syncBanner" class="sync-banner offline">⚠️ Mất kết nối — dữ liệu đang được giữ trên máy.</div>
   <div id="mainTop" class="topbar">
-    <div><h1>Hàu 5K <span style='font-size:12px;background:#fff;color:#0b66d8;padding:3px 7px;border-radius:8px;vertical-align:middle'>V14.1A</span></h1><div class="small" id="today"></div></div>
+    <div><h1>Hàu 5K <span style='font-size:12px;background:#fff;color:#0b66d8;padding:3px 7px;border-radius:8px;vertical-align:middle'>V14.2A</span></h1><div class="small" id="today"></div></div>
     <span class="badge" id="openBadge">0 bàn đang gọi</span>
   </div>
 
@@ -690,6 +690,20 @@ button,input,select{touch-action:manipulation}
     <div class="actions">
       <button class="btn secondary" id="closePayModal">Quay lại</button>
       <button class="btn success" id="confirmPayBtn">Xác nhận thanh toán</button>
+    </div>
+  </div>
+</div>
+
+<div id="k58Modal" class="pay-modal hidden">
+  <div class="pay-box">
+    <h2>🖨️ In K58</h2>
+    <div class="small" style="color:var(--muted);margin-bottom:12px">
+      Chọn loại phiếu. Android sẽ mở bảng Chia sẻ; chọn RawBT để in.
+    </div>
+    <div class="actions" style="display:grid;grid-template-columns:1fr;gap:10px">
+      <button class="btn success" id="printCustomerBtn">🧾 In bill khách</button>
+      <button class="btn primary" id="printKitchenBtn">🧑‍🍳 In phiếu bếp</button>
+      <button class="btn secondary" id="closeK58Btn">Không in / Xong</button>
     </div>
   </div>
 </div>
@@ -1165,6 +1179,75 @@ function updatePayCalc(){
  document.getElementById("payFinalTotal").textContent=fmt(finalTotal);
  document.getElementById("payChangeText").textContent=payMethod==="cash"?"Tiền thối: "+fmt(Math.max(0,received-finalTotal)):"Chuyển khoản: "+fmt(finalTotal);
 }
+
+let lastPaidRecord=null;
+
+function k58Ascii(v){
+ return String(v??"")
+   .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+   .replace(/đ/g,"d").replace(/Đ/g,"D")
+   .replace(/[^\x20-\x7E]/g,"");
+}
+function k58Money(v){
+ return Math.round(Number(v)||0).toLocaleString("en-US").replace(/,/g,".")+"d";
+}
+function k58Line(ch="-"){ return ch.repeat(32); }
+function k58Text(o,kitchen=false){
+ const rows=[];
+ rows.push(kitchen?"PHIEU BEP":"HAU 5K");
+ rows.push(k58Line("="));
+ rows.push("Ban: "+k58Ascii(o.seat||""));
+ rows.push("Gio: "+k58Ascii(o.time||""));
+ rows.push(k58Line());
+ (o.items||[]).forEach((x,i)=>{
+   const name=k58Ascii(x.name||"Mon").slice(0,28);
+   const qty=Number(x.qty||0);
+   rows.push((i+1)+". "+name);
+   if(kitchen){
+     rows.push("   SL: "+qty);
+   }else{
+     rows.push("   "+qty+" x "+k58Money(x.price)+" = "+k58Money(qty*Number(x.price||0)));
+   }
+ });
+ rows.push(k58Line());
+ if(!kitchen){
+   if(Number(o.discount||0)>0) rows.push("Giam: "+k58Money(o.discount));
+   rows.push("TONG: "+k58Money(o.total));
+   rows.push("TT: "+(o.paymentMethod==="transfer"?"CHUYEN KHOAN":"TIEN MAT"));
+   if(o.paymentMethod==="cash"){
+     rows.push("Khach dua: "+k58Money(o.received));
+     rows.push("Tien thoi: "+k58Money(o.change));
+   }
+   if(o.paymentNote) rows.push("Ghi chu: "+k58Ascii(o.paymentNote).slice(0,24));
+   rows.push(k58Line("="));
+   rows.push("CAM ON QUY KHACH!");
+ }
+ rows.push(""); rows.push("");
+ return rows.join("\n");
+}
+async function shareK58(kitchen=false){
+ if(!lastPaidRecord){ alert("Chua co hoa don de in."); return; }
+ const text=k58Text(lastPaidRecord,kitchen);
+ try{
+   if(navigator.share){
+     await navigator.share({title:kitchen?"Phieu bep HAU 5K":"Bill HAU 5K",text});
+   }else{
+     await navigator.clipboard.writeText(text);
+     alert("May nay khong ho tro Chia se. Da chep noi dung phieu.");
+   }
+ }catch(e){
+   if(e && e.name!=="AbortError") alert("Khong mo duoc bang Chia se: "+e.message);
+ }
+}
+function openK58Modal(record){
+ lastPaidRecord=record;
+ document.getElementById("k58Modal").classList.remove("hidden");
+}
+function closeK58Modal(){
+ document.getElementById("k58Modal").classList.add("hidden");
+ goTables();
+}
+
 async function payCurrent(){
  if(!current||!cart.length)return;
  const original=total(cart);
@@ -1183,8 +1266,8 @@ async function payCurrent(){
      const open=getOpen();delete open[current];localPut("hau5k_open_orders_v4",open);
    }
    document.getElementById("payModal").classList.add("hidden");
-   alert("Đã thanh toán "+fmt(amount)+(discount?" • Giảm "+fmt(discount):""));
-   goTables();if(isOwner)refreshReport();
+   openK58Modal(record);
+   if(isOwner)refreshReport();
  }catch(e){alert("Không thanh toán được: "+e.message)}
 }
 async function cancelCurrent(){
@@ -1443,6 +1526,9 @@ document.getElementById("saveBtn").addEventListener("click",saveCurrent);
 document.getElementById("payBtn").addEventListener("click",openPayModal);
 document.getElementById("closePayModal").addEventListener("click",()=>document.getElementById("payModal").classList.add("hidden"));
 document.getElementById("confirmPayBtn").addEventListener("click",payCurrent);
+document.getElementById("printCustomerBtn").addEventListener("click",()=>shareK58(false));
+document.getElementById("printKitchenBtn").addEventListener("click",()=>shareK58(true));
+document.getElementById("closeK58Btn").addEventListener("click",closeK58Modal);
 document.getElementById("payDiscount").addEventListener("input",updatePayCalc);
 document.getElementById("payReceived").addEventListener("input",updatePayCalc);
 document.querySelectorAll("[data-pay-method]").forEach(b=>b.addEventListener("click",()=>{
